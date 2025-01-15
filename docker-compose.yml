@@ -1,0 +1,24 @@
+services:
+
+  install:
+    image: node
+    volumes:
+      - ./:/app/
+      - $NPMRC_PATH:/var/.npmrc
+    working_dir: /app/
+    entrypoint: npm install
+
+  build:
+    image: node
+    volumes:
+      - ./:/app/
+    working_dir: /app/
+    entrypoint: npm run build
+
+  publish:
+    image: node
+    volumes:
+      - ./:/app/
+      - $NPMRC_PATH:/var/.npmrc
+    working_dir: /app/
+    entrypoint: npm publish --userconfig=/var/.npmrc
