@@ -58,7 +58,7 @@ export type SessionPayload = {
 }
 
 /**
- * This implements rest client for Incomaker OAuth server - https://gitlab.incomaker.com/apis/oauth-server
+ * This implements rest client for OAuth server - https://github.com/lotcz/oauth-server
  */
 export class OAuthRestClient extends RestClient {
 

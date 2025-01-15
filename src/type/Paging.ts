@@ -9,13 +9,13 @@ export type PagingRequest = {
 	page: number;
 	size: number;
 	search?: string | null;
-	sorting: SortingRequest;
+	sorting?: SortingRequest | null;
 };
 
 export type Page<Type> = {
-	totalPages: number;
-	totalElements: number;
-	number: number;
+	totalItems: number;
+	pageSize: number;
+	pageNumber: number;
 	content: Array<Type>;
 };
 
