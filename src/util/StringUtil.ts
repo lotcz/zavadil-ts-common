@@ -29,6 +29,20 @@ export class StringUtil extends ObjectUtil {
 		return str.includes("\n");
 	}
 
+	static trimLeadingSlashes(str: string | null): string {
+		if (this.isEmpty(str)) return '';
+
+		// @ts-ignore
+		return str.replace(/^\//g, '');
+	}
+
+	static trimTrailingSlashes(str: string | null): string {
+		if (this.isEmpty(str)) return '';
+
+		// @ts-ignore
+		return str.replace(/\/$/g, '');
+	}
+
 	static trimSlashes(str: string | null): string {
 		if (this.isEmpty(str)) return '';
 

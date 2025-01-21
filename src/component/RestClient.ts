@@ -1,5 +1,6 @@
 import { StringUtil } from "../util";
 import {PagingRequest, SortingField, SortingRequest} from "../type";
+import {PagingUtil} from "../util/PagingUtil";
 
 export type RestClientHeaders = {};
 
@@ -11,26 +12,8 @@ export class RestClient {
 		this.baseUrl = baseUrl;
 	}
 
-	static sortingFieldToString(s: SortingField): string | undefined {
-		return s.desc ? `${s.name} DESC` : s.name;
-	}
-
-	static sortingRequestToString(s: SortingRequest): string | undefined {
-		return s.map((s: SortingField) => RestClient.sortingFieldToString(s)).join(',');
-	}
-
 	static pagingRequestToQueryParams(pr: PagingRequest): any {
-		const result: any = {
-			page: pr.page,
-			size: pr.size
-		}
-		if (pr.search) {
-			result.search = pr.search;
-		}
-		if (pr.sorting) {
-			result.sorting = RestClient.sortingRequestToString(pr.sorting);
-		}
-		return result;
+		return PagingUtil.pagingRequestToQueryParams(pr);
 	}
 
 	/**
@@ -45,23 +28,24 @@ export class RestClient {
 	}
 
 	getUrl(endpoint: string) {
-		return [StringUtil.trimSlashes(this.baseUrl), StringUtil.trimSlashes(endpoint)].join('/');
+		return [StringUtil.trimTrailingSlashes(this.baseUrl), StringUtil.trimLeadingSlashes(endpoint)].join('/');
 	}
 
-	getRequestOptions(method: string = 'GET', data: object | null = null): Promise<any> {
+	getRequestOptions(method: string = 'GET', data: object | null = null): Promise<RequestInit> {
 		return this.getHeaders()
 			.then(
 				(headers) => {
 					return {
 						method: method,
 						headers: headers,
-						body: data === null ? null : JSON.stringify(data)
+						body: (data === null) ? null
+							: (data instanceof FormData) ? data : JSON.stringify(data)
 					};
 				}
 			);
 	}
 
-	processRequest(endpoint: string, requestOptions?: object): Promise<Response> {
+	processRequest(endpoint: string, requestOptions?: RequestInit): Promise<Response> {
 		return fetch(this.getUrl(endpoint), requestOptions)
 			.then((response) => {
 				if (!response.ok) {

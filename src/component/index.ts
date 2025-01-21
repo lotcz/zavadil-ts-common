@@ -5,3 +5,5 @@ export * from './OAuthRestClient';
 export * from './OAuthSessionManager';
 export * from './OAuthSubject';
 export * from './CancellablePromise';
+export * from './Lazy';
+export * from './LazyAsync';
