@@ -4,9 +4,8 @@
 		"target": "es5",
 		"module": "ESNext",
 		"lib": [
-			"es6",
-			"dom",
-			"es2020.bigint"
+			"es2017",
+			"dom"
 		],
 		"outDir": "./dist",
 		"rootDir": "./src",

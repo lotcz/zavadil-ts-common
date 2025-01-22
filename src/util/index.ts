@@ -4,3 +4,4 @@ export { ArrayUtil } from './ArrayUtil';
 export { AsyncUtil } from './AsyncUtil';
 export { ByteUtil } from './ByteUtil';
 export { PagingUtil } from './PagingUtil';
+export { DateUtil } from './DateUtil';

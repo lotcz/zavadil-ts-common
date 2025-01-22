@@ -1,25 +1,18 @@
-import {UserAlert} from "../type";
+import {UserAlert, UserAlertType} from "../type";
 import {EventManager, Func} from "./EventManager";
 
 export class UserAlerts {
 
-	private lifetimeMs: number = 10000;
+	private maxAlerts: number;
 
 	private em: EventManager;
 
 	public alerts: Array<UserAlert>;
 
-	constructor() {
+	constructor(maxAlerts: number = 10) {
+		this.maxAlerts = maxAlerts;
 		this.em = new EventManager();
 		this.alerts = [];
-		setInterval(() => this.flushAlerts(), 1000)
-	}
-
-	flushAlerts() {
-		const now = new Date();
-		const threshold = now.getTime() - this.lifetimeMs;
-		this.alerts = this.alerts.filter((a) => a.time.getTime() > threshold);
-		this.triggerChange();
 	}
 
 	addOnChangeHandler(h: Func) {
@@ -46,28 +39,44 @@ export class UserAlerts {
 
 	add(alert: UserAlert) {
 		this.alerts.push(alert);
+		while (this.alerts.length > this.maxAlerts) {
+			this.alerts.shift();
+		}
 		this.triggerChange();
 	}
 
-	custom(type: string, title: string, message: string) {
+	custom(type: UserAlertType, message: string) {
 		this.add({
 			time: new Date(),
 			type: type,
-			title: title,
 			message: message
 		});
 	}
 
 	err(message: string) {
-		this.custom('danger', 'Error', message);
+		this.custom(UserAlertType.error, message);
 	}
 
 	warn(message: string) {
-		this.custom('warning', 'Warning', message);
+		this.custom(UserAlertType.warning, message);
 	}
 
 	info(message: string) {
-		this.custom('info', 'Warning', message);
+		this.custom(UserAlertType.info, message);
+	}
+
+	getSummary(): Map<UserAlertType, number> {
+		const map= new Map<UserAlertType, number>;
+		const types = Object.values(UserAlertType);
+		types.forEach((t, index) => {
+			map.set(t, 0);
+		});
+		for (let i = 0; i < this.alerts.length; i++) {
+			const alert = this.alerts[i];
+			const n: number = map.get(alert.type) || 0;
+			map.set(alert.type, n + 1);
+		}
+		return map;
 	}
 
 }
