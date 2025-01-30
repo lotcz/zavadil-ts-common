@@ -1,6 +1,5 @@
-import { StringUtil } from "../util";
-import {PagingRequest, SortingField, SortingRequest} from "../type";
-import {PagingUtil} from "../util/PagingUtil";
+import { StringUtil, PagingUtil } from "../util";
+import { PagingRequest } from "../type";
 
 export type RestClientHeaders = {};
 
@@ -12,7 +11,8 @@ export class RestClient {
 		this.baseUrl = baseUrl;
 	}
 
-	static pagingRequestToQueryParams(pr: PagingRequest): any {
+	static pagingRequestToQueryParams(pr?: PagingRequest | null): any {
+		if (!pr) return;
 		return PagingUtil.pagingRequestToQueryParams(pr);
 	}
 
