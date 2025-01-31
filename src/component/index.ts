@@ -7,3 +7,5 @@ export * from './OAuthSubject';
 export * from './CancellablePromise';
 export * from './Lazy';
 export * from './LazyAsync';
+export * from './CacheAsync';
+export * from './HashCacheAsync';

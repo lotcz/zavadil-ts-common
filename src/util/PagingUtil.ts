@@ -21,12 +21,14 @@ export class PagingUtil {
 		return s.map((s: SortingField) => PagingUtil.sortingFieldToString(s)).join(',');
 	}
 
-	static sortingRequestFromString(s: string): SortingRequest {
+	static sortingRequestFromString(s?: string | null): SortingRequest {
+		if (!s) return [];
 		const arr = s.split(',');
 		return arr.map((s) => PagingUtil.sortingFieldFromString(s));
 	}
 
-	static pagingRequestToQueryParams(pr: PagingRequest): any {
+	static pagingRequestToQueryParams(pr?: PagingRequest | null): any {
+		if (!pr) return;
 		const result: any = {
 			page: pr.page,
 			size: pr.size
@@ -40,7 +42,8 @@ export class PagingUtil {
 		return result;
 	}
 
-	static pagingRequestToString(pr: PagingRequest): string {
+	static pagingRequestToString(pr?: PagingRequest): string {
+		if (!pr) return '';
 		const arr = [];
 		arr.push(String(pr.page));
 		arr.push(String(pr.size));

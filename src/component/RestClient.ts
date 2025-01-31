@@ -12,7 +12,6 @@ export class RestClient {
 	}
 
 	static pagingRequestToQueryParams(pr?: PagingRequest | null): any {
-		if (!pr) return;
 		return PagingUtil.pagingRequestToQueryParams(pr);
 	}
 
