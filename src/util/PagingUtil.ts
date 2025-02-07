@@ -5,25 +5,26 @@ export const FIRST_PAGE: PagingRequest = {page: 0, size: 10};
 
 export class PagingUtil {
 
-	static sortingFieldToString(s: SortingField): string | undefined {
-		return s.desc ? `${s.name} DESC` : s.name;
+	static sortingFieldToString(s: SortingField): string {
+		if (!s) return '';
+		return s.desc ? `${s.name}-desc` : s.name;
 	}
 
 	static sortingFieldFromString(s: string): SortingField {
-		const arr = s.split(' ');
+		const arr = s.split('-');
 		return {
 			name: arr[0],
-			desc: arr.length > 1
+			desc: arr.length > 1 && StringUtil.safeLowercase(arr[1]) === 'desc'
 		}
 	}
 
 	static sortingRequestToString(s: SortingRequest): string | undefined {
-		return s.map((s: SortingField) => PagingUtil.sortingFieldToString(s)).join(',');
+		return s.map((s: SortingField) => PagingUtil.sortingFieldToString(s)).join('+');
 	}
 
 	static sortingRequestFromString(s?: string | null): SortingRequest {
 		if (!s) return [];
-		const arr = s.split(',');
+		const arr = s.split('+');
 		return arr.map((s) => PagingUtil.sortingFieldFromString(s));
 	}
 
@@ -47,7 +48,7 @@ export class PagingUtil {
 		const arr = [];
 		arr.push(String(pr.page));
 		arr.push(String(pr.size));
-		arr.push(String(pr.search));
+		arr.push(StringUtil.safeTrim(pr.search));
 		arr.push(pr.sorting ? PagingUtil.sortingRequestToString(pr.sorting) : '');
 		return arr.join(':');
 	}

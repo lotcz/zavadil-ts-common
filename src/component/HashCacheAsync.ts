@@ -6,8 +6,11 @@ export class HashCacheAsync<K, V> {
 
 	private supplier: (k: K) => Promise<V>;
 
-	constructor(supplier: (k: K) => Promise<V>) {
+	private maxSize: number = 100;
+
+	constructor(supplier: (k: K) => Promise<V>, maxSize?: number) {
 		this.supplier = supplier;
+		if (maxSize) this.maxSize = maxSize;
 	}
 
 	private obtainCache(k: K): CacheAsync<V> {
@@ -33,5 +36,13 @@ export class HashCacheAsync<K, V> {
 		} else {
 			this.cache.delete(k);
 		}
+	}
+
+	getSize() {
+		return this.cache.size;
+	}
+
+	getMaxSize() {
+		return this.maxSize;
 	}
 }

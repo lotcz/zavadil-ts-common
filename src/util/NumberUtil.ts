@@ -14,4 +14,10 @@ export class NumberUtil extends ObjectUtil {
 		return Math.round( n * c) / c;
 	}
 
+	static portionToPercent(p: number, d?: number): string {
+		if (p === null || p === undefined) return '';
+		const n = NumberUtil.round(p * 100, d);
+		return `${n}%`
+	}
+
 }

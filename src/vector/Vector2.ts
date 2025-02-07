@@ -1,6 +1,6 @@
 import {NumberUtil} from "../util";
 
-export default class Vector2 {
+export class Vector2 {
 	x: number;
 	y: number;
 

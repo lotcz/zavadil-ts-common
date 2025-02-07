@@ -65,6 +65,16 @@ export class StringUtil extends ObjectUtil {
 		return str.trim();
 	}
 
+	static safeLowercase(str: string | null | undefined): string {
+		if (StringUtil.isEmpty(str) || !str) return '';
+		return str.toLowerCase();
+	}
+
+	static safeUppercase(str: string | null | undefined): string {
+		if (StringUtil.isEmpty(str) || !str) return '';
+		return str.toUpperCase();
+	}
+
 	static toBigInt(str: string | null): bigint | null {
 		if (this.isEmpty(str)) return null;
 
