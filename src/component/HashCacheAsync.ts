@@ -1,3 +1,4 @@
+import { HashCacheStats } from "../type/Stats";
 import {CacheAsync} from "./CacheAsync";
 
 export class HashCacheAsync<K, V> {
@@ -44,5 +45,12 @@ export class HashCacheAsync<K, V> {
 
 	getMaxSize() {
 		return this.maxSize;
+	}
+
+	getStats(): HashCacheStats {
+		return {
+			cachedItems: this.getSize(),
+			capacity: this.getMaxSize()
+		}
 	}
 }
