@@ -26,8 +26,24 @@ export class RestClient {
 		);
 	}
 
-	getUrl(endpoint: string) {
-		return [StringUtil.trimTrailingSlashes(this.baseUrl), StringUtil.trimLeadingSlashes(endpoint)].join('/');
+	paramsToQueryString(params?: any): string {
+		if (!params) return '';
+		const original = new URLSearchParams(params);
+		const cleaned = new URLSearchParams();
+		original.forEach((value, key) => {
+			if (value !== '' && value !== undefined && value !== "undefined")
+				cleaned.set(key, value);
+		});
+		const str = cleaned.toString();
+		return StringUtil.isEmpty(str) ? '' : `?${str}`;
+	}
+
+	getUrl(endpoint: string, params?: any) {
+		let url = [StringUtil.trimTrailingSlashes(this.baseUrl), StringUtil.trimLeadingSlashes(endpoint)].join('/');
+		if (params) {
+			url = `${url}${this.paramsToQueryString(params)}`;
+		}
+		return url;
 	}
 
 	getRequestOptions(method: string = 'GET', data: object | null = null): Promise<RequestInit> {
@@ -98,13 +114,7 @@ export class RestClient {
 
 	getJson(url: string, params?: any): Promise<any> {
 		if (params) {
-			const original = new URLSearchParams(params);
-			const cleaned = new URLSearchParams();
-			original.forEach((value, key) => {
-				if (value !== '' && value !== undefined && value !== "undefined")
-					cleaned.set(key, value);
-			});
-			url = `${url}?${cleaned.toString()}`;
+			url = `${url}${this.paramsToQueryString(params)}`;
 		}
 		return this.getRequestOptions().then(o => this.processRequestJson(url, o));
 	}

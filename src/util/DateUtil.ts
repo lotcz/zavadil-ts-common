@@ -28,6 +28,15 @@ export class DateUtil {
 		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 	}
 
+	static formatDateForInput(d: any): string {
+		const date = DateUtil.parseDate(d);
+		if (date === undefined) return '';
+		const year = date.getFullYear();
+		const month = DateUtil.formatNumber(date.getMonth() + 1);
+		const day = DateUtil.formatNumber(date.getDate());
+		return `${year}-${month}-${day}`;
+	}
+
 	static getDurationMs(d1?: Date | string | null, d2?: Date | string | null): number | null {
 		d1 = DateUtil.parseDate(d1);
 		d2 = DateUtil.parseDate(d2);

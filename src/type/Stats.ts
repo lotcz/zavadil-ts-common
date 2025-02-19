@@ -7,6 +7,7 @@ export type JavaHeapStats = {
 export type QueueStats = {
 	remaining: number;
 	loaded: number;
+	processed: number;
 	state: string;
 }
 
