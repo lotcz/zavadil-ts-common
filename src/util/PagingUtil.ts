@@ -54,9 +54,9 @@ export class PagingUtil {
 	}
 
 	static pagingRequestFromString(pr?: string): PagingRequest {
-		if (!pr || StringUtil.isEmpty(pr)) return FIRST_PAGE;
+		if (!pr || StringUtil.isEmpty(pr)) return {...FIRST_PAGE};
 		const arr = pr.split(':');
-		if (arr.length < 4) return FIRST_PAGE;
+		if (arr.length < 4) return {...FIRST_PAGE};
 		return {
 			page: Number(arr[0]),
 			size: Number(arr[1]),
