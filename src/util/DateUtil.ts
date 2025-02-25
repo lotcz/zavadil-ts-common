@@ -15,17 +15,27 @@ export class DateUtil {
 		return d;
 	}
 
-	static formatDateForHumans(d: Date | string | null | undefined): string {
+	static formatDateForHumans(d: Date | string | null | undefined, showTime = false): string {
 		d = DateUtil.parseDate(d);
 		if (!d) return "";
 
 		const year = d.getFullYear();
 		const month = DateUtil.formatNumber(d.getMonth() + 1);
 		const day = DateUtil.formatNumber(d.getDate());
+
+		const date = `${year}-${month}-${day}`
+		if (!showTime) {
+			return date;
+		}
+
 		const hours = DateUtil.formatNumber(d.getHours());
 		const minutes = DateUtil.formatNumber(d.getMinutes());
 		const seconds = DateUtil.formatNumber(d.getSeconds());
-		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+		return `${date} ${hours}:${minutes}:${seconds}`;
+	}
+
+	static formatDateTimeForHumans(d: Date | string | null | undefined): string {
+		return DateUtil.formatDateForHumans(d, true);
 	}
 
 	static formatDateForInput(d: any): string {

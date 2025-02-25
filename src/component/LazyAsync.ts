@@ -19,4 +19,9 @@ export class LazyAsync<T> {
 			return Promise.resolve(this.cache);
 		}
 	}
+
+	reset() {
+		this.cache = undefined;
+	}
+
 }

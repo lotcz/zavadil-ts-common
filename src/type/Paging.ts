@@ -1,6 +1,7 @@
 export type SortingField = {
 	name: string;
 	desc?: boolean;
+	nullsLast?: boolean;
 };
 
 export type SortingRequest = Array<SortingField>;

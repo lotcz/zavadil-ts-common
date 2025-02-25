@@ -14,4 +14,8 @@ export class Lazy<T> {
 		}
 		return this.cache;
 	}
+
+	reset() {
+		this.cache = undefined;
+	}
 }

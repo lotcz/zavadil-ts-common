@@ -7,14 +7,19 @@ export class PagingUtil {
 
 	static sortingFieldToString(s: SortingField): string {
 		if (!s) return '';
-		return s.desc ? `${s.name}-desc` : s.name;
+		const parts = [];
+		parts.push(s.name);
+		parts.push(s.desc ? 'desc' : '');
+		parts.push(s.nullsLast ? 'nl' : '');
+		return parts.join('-');
 	}
 
 	static sortingFieldFromString(s: string): SortingField {
 		const arr = s.split('-');
 		return {
 			name: arr[0],
-			desc: arr.length > 1 && StringUtil.safeLowercase(arr[1]) === 'desc'
+			desc: arr.length > 1 && StringUtil.safeLowercase(arr[1]) === 'desc',
+			nullsLast: arr.length > 2 && StringUtil.safeLowercase(arr[2]) === 'nl'
 		}
 	}
 
