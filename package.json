@@ -1,6 +1,6 @@
 {
 	"name": "zavadil-ts-common",
-	"version": "1.1.39",
+	"version": "1.1.71",
 	"description": "Common types and components for Typescript UI apps.",
 	"main": "dist/index.js",
 	"module": "dist/index.esm.js",

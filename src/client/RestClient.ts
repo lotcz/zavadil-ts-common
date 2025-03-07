@@ -1,5 +1,6 @@
 import { StringUtil, PagingUtil } from "../util";
 import { PagingRequest } from "../type";
+import {JsonUtil} from "../util/JsonUtil";
 
 export type RestClientHeaders = {};
 
@@ -18,7 +19,7 @@ export class RestClient {
 	/**
 	 * Override this to customize http headers.
 	 */
-	getHeaders(): Promise<RestClientHeaders> {
+	getHeaders(url: string): Promise<RestClientHeaders> {
 		return Promise.resolve(
 			{
 				'Content-Type': 'application/json'
@@ -46,8 +47,8 @@ export class RestClient {
 		return url;
 	}
 
-	getRequestOptions(method: string = 'GET', data: object | null = null): Promise<RequestInit> {
-		return this.getHeaders()
+	getRequestOptions(url: string, method: string = 'GET', data: object | null = null): Promise<RequestInit> {
+		return this.getHeaders(url)
 			.then(
 				(headers) => {
 					return {
@@ -108,7 +109,7 @@ export class RestClient {
 	processRequestJson(url: string, requestOptions?: object | undefined): Promise<any> {
 		return this.processRequest(url, requestOptions)
 			.then((response) => {
-				return response.json();
+				return response.text().then(JsonUtil.parseWithDates);
 			});
 	}
 
@@ -116,31 +117,31 @@ export class RestClient {
 		if (params) {
 			url = `${url}${this.paramsToQueryString(params)}`;
 		}
-		return this.getRequestOptions().then(o => this.processRequestJson(url, o));
+		return this.getRequestOptions(url).then(o => this.processRequestJson(url, o));
 	}
 
 	postJson(url: string, data: object | null = null): Promise<any> {
-		return this.getRequestOptions('POST', data).then(o => this.processRequestJson(url, o));
+		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequestJson(url, o));
 	}
 
 	putJson(url: string, data: object | null = null): Promise<any> {
-		return this.getRequestOptions('PUT', data).then(o => this.processRequestJson(url, o));
+		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequestJson(url, o));
 	}
 
 	get(url: string): Promise<Response> {
-		return this.getRequestOptions().then(o => this.processRequest(url, o));
+		return this.getRequestOptions(url).then(o => this.processRequest(url, o));
 	}
 
 	del(url: string): Promise<Response> {
-		return this.getRequestOptions('DELETE').then(o => this.processRequest(url, o));
+		return this.getRequestOptions(url, 'DELETE').then(o => this.processRequest(url, o));
 	}
 
 	post(url: string, data: object | null = null): Promise<Response> {
-		return this.getRequestOptions('POST', data).then(o => this.processRequest(url, o));
+		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequest(url, o));
 	}
 
 	put(url: string, data: object | null = null): Promise<Response> {
-		return this.getRequestOptions('PUT', data).then(o => this.processRequest(url, o));
+		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequest(url, o));
 	}
 
 }

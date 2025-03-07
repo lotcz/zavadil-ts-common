@@ -1,4 +1,4 @@
-import {RestClient} from "./RestClient";
+import {RestClient} from "../client";
 import {StringUtil} from "../util";
 
 export type TokenRequestPayloadBase = {
@@ -7,10 +7,11 @@ export type TokenRequestPayloadBase = {
 
 export type RequestAccessTokenPayload = TokenRequestPayloadBase & {
 	idToken: string;
+	privilege: string;
 }
 
-export type RequestIdTokenFromSessionPayload = TokenRequestPayloadBase & {
-	sessionId: string;
+export type RequestIdTokenFromPrevTokenPayload = {
+	idToken: string;
 }
 
 export type RequestIdTokenFromLoginPayload = TokenRequestPayloadBase & {
@@ -18,22 +19,16 @@ export type RequestIdTokenFromLoginPayload = TokenRequestPayloadBase & {
 	password: string;
 }
 
-export type RefreshAccessTokenPayload = TokenRequestPayloadBase & {
-	accessToken: string;
-	refreshToken: string;
-}
-
 export type TokenResponsePayloadBase = {
+	token: string;
+	issuedAt: Date;
 	expires?: Date | null;
 }
 
 export type IdTokenPayload = TokenResponsePayloadBase & {
-	idToken: string;
 }
 
 export type AccessTokenPayload = TokenResponsePayloadBase & {
-	accessToken: string;
-	refreshToken: string;
 }
 
 export type JwKeyPayload = {
@@ -47,46 +42,34 @@ export type JwksPayload = {
 	keys: Array<JwKeyPayload>;
 }
 
-export type SessionPayload = {
-	session_id: string;
-	plugin_id: number;
-	user_id: number;
-	account_id: number;
-	server: string;
-	user_name: string;
-	timezone: string;
-}
-
 /**
  * This implements rest client for OAuth server - https://github.com/lotcz/oauth-server
+ * Provide basic url, /api/oauth path prefix will be added automatically
  */
 export class OAuthRestClient extends RestClient {
 
-	constructor(baseUrl: string) {
-		super(`${StringUtil.trimSlashes(baseUrl)}/api`);
+	constructor(oauthUrl: string) {
+		super(`${StringUtil.trimSlashes(oauthUrl)}/api/oauth`);
 	}
 
 	jwks(): Promise<JwksPayload> {
 		return this.getJson('jwks.json');
 	}
 
+	verifyIdToken(idToken: string): Promise<IdTokenPayload> {
+		return this.getJson(`id-tokens/verify/${idToken}`);
+	}
+
 	requestIdTokenFromLogin(request: RequestIdTokenFromLoginPayload): Promise<IdTokenPayload> {
 		return this.postJson('id-tokens/from-login', request);
 	}
 
-	requestIdTokenFromSession(request: RequestIdTokenFromSessionPayload): Promise<IdTokenPayload> {
-		return this.postJson('id-tokens/from-session', request);
+	refreshIdToken(request: RequestIdTokenFromPrevTokenPayload): Promise<IdTokenPayload> {
+		return this.postJson('id-tokens/refresh', request);
 	}
 
 	requestAccessToken(request: RequestAccessTokenPayload): Promise<AccessTokenPayload> {
 		return this.postJson('access-tokens/from-id-token', request);
 	}
 
-	refreshAccessToken(request: RefreshAccessTokenPayload): Promise<AccessTokenPayload> {
-		return this.postJson('access-tokens/refresh', request);
-	}
-
-	loadSessionById(sessionId: string): Promise<SessionPayload> {
-		return this.getJson(`sessions/${sessionId}`);
-	}
 }

@@ -1,4 +1,4 @@
-import { HashCacheStats } from "../type/Stats";
+import { HashCacheStats } from "../type";
 import {CacheAsync} from "./CacheAsync";
 
 export class HashCacheAsync<K, V> {
@@ -14,7 +14,7 @@ export class HashCacheAsync<K, V> {
 		if (maxSize) this.maxSize = maxSize;
 	}
 
-	private obtainCache(k: K): CacheAsync<V> {
+	protected obtainCache(k: K): CacheAsync<V> {
 		let c = this.cache.get(k);
 		if (!c) {
 			c = new CacheAsync(() => this.supplier(k));
@@ -27,8 +27,8 @@ export class HashCacheAsync<K, V> {
 		return this.obtainCache(k).get();
 	}
 
-	set(k: K, v: V){
-		this.obtainCache(k).set(v);
+	set(k: K, v: V, expires?: Date){
+		this.obtainCache(k).set(v, expires);
 	}
 
 	reset(k?: K) {

@@ -25,9 +25,10 @@ export class CacheAsync<T> {
 		}
 	}
 
-	set(v: T) {
+	set(v: T, expires?: Date) {
 		this.cache = v;
-		if (this.maxAgeMs) {
+		this.expires = expires;
+		if (this.maxAgeMs && this.expires === undefined) {
 			this.expires = new Date(new Date().getTime() + this.maxAgeMs);
 		}
 	}

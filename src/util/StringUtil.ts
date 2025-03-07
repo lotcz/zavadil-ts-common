@@ -3,11 +3,19 @@ import { ObjectUtil } from "./ObjectUtil";
 export class StringUtil extends ObjectUtil {
 
 	static isEmpty(str: string | null | undefined): boolean {
-		return ObjectUtil.isEmpty(str) || str?.trim().length === 0;
+		return ObjectUtil.isEmpty(str) || str?.length === 0;
 	}
 
 	static notEmpty(str: string | null | undefined): boolean {
 		return !StringUtil.isEmpty(str);
+	}
+
+	static isBlank(str: string | null | undefined): boolean {
+		return StringUtil.isEmpty(StringUtil.safeTrim(str));
+	}
+
+	static notBlank(str: string | null | undefined): boolean {
+		return !StringUtil.isBlank(str);
 	}
 
 	static substr(str: string | null | undefined, start: number, length?: number): string {

@@ -53,8 +53,8 @@ export class UserAlerts {
 		});
 	}
 
-	err(message: string) {
-		this.custom(UserAlertType.error, message);
+	err(error: string | Error) {
+		this.custom(UserAlertType.error, typeof error === 'string' ? error : error.toString());
 	}
 
 	warn(message: string) {
