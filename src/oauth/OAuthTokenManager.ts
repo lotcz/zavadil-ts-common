@@ -56,7 +56,8 @@ export class OAuthTokenManager {
 	}
 
 	reset() {
-		this.setIdToken(undefined);
+		this.idToken = undefined;
+		this.eventManager.triggerEvent('id-token-changed', undefined);
 		this.accessTokens.clear();
 	}
 

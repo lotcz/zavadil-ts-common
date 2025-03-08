@@ -64,13 +64,20 @@ export class RestClientWithOAuth extends RestClient {
 					console.log('OAuth initialization failed:', reason);
 					return this.getServerInfo().then(
 						(si) => {
-							const documentlocation = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${document.location}`;
-							console.log('Redirecting:', documentlocation);
+							const location = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${document.location}`;
+							console.log('Redirecting:', location);
+							document.location = location;
 							return Promise.resolve(false);
 						}
 					)
 				}
 			);
+	}
+
+	logout(): Promise<any> {
+		return this.getTokenManager()
+			.then((m) => m.reset())
+			.then(() => this.initialize());
 	}
 
 	/**
