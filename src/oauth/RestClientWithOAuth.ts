@@ -2,8 +2,7 @@ import {OAuthTokenManager} from "./OAuthTokenManager";
 import {RestClient, RestClientHeaders} from "../client";
 import {IdTokenPayload} from "./OAuthRestClient";
 import {LazyAsync} from "../cache";
-import {DateUtil, StringUtil} from "../util";
-import {JsonUtil} from "../util/JsonUtil";
+import {StringUtil, JsonUtil} from "../util";
 
 export type ServerOAuthInfoPayload = {
 	debugMode?: boolean;
@@ -111,7 +110,7 @@ export class RestClientWithOAuth extends RestClient {
 	}
 
 	private getServerInfoInternal(): Promise<ServerOAuthInfoPayload> {
-		return this.insecureClient.getJson('status/info');
+		return this.insecureClient.getJson('status/oauth/info');
 	}
 
 	getServerInfo(): Promise<ServerOAuthInfoPayload> {
