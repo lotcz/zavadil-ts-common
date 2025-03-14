@@ -94,4 +94,16 @@ export class StringUtil extends ObjectUtil {
 		return args.find(a => StringUtil.notEmpty(a)) || "";
 	}
 
+	static getNonBlank(...args: Array<string | null | undefined>): string {
+		return args.find(a => StringUtil.notBlank(a)) || "";
+	}
+
+	static emptyToNull(str: string | null | undefined): string | null {
+		return StringUtil.isEmpty(str) ? null : String(str);
+	}
+
+	static blankToNull(str: string | null | undefined): string | null {
+		return StringUtil.isBlank(str) ? null : String(str);
+	}
+
 }
