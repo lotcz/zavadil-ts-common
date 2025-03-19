@@ -2,10 +2,11 @@ import {EntityClient} from "./EntityClient";
 import {EntityBase} from "../type/Entity";
 import { LazyAsync } from "../cache";
 import { RestClient } from "./RestClient";
+import {HashCacheStats} from "../type";
 
 export class LookupClient<T extends EntityBase> extends EntityClient<T> {
 
-	private cache: LazyAsync<Array<T>>;
+	protected cache: LazyAsync<Array<T>>;
 
 	constructor(client: RestClient, name: string) {
 		super(client, name);
@@ -43,4 +44,15 @@ export class LookupClient<T extends EntityBase> extends EntityClient<T> {
 		return super.delete(id).then(() => this.cache.reset());
 	}
 
+	reset() {
+		this.cache.reset();
+	}
+
+	getStats(): HashCacheStats {
+		const size = this.cache.getCache()?.length;
+		return {
+			cachedItems: size || 0,
+			capacity: size || 0
+		}
+	}
 }

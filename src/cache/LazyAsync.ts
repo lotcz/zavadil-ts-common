@@ -34,4 +34,11 @@ export class LazyAsync<T> {
 		this.cache = undefined;
 	}
 
+	hasCache() {
+		return (this.cache !== undefined);
+	}
+
+	getCache(): T | undefined {
+		return this.cache;
+	}
 }

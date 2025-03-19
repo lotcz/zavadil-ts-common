@@ -53,4 +53,8 @@ export class HashCacheAsync<K, V> {
 			capacity: this.getMaxSize()
 		}
 	}
+
+	hasCache(k: K) {
+		return this.cache.has(k);
+	}
 }

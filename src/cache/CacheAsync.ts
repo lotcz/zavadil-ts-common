@@ -32,4 +32,12 @@ export class CacheAsync<T> {
 			this.expires = new Date(new Date().getTime() + this.maxAgeMs);
 		}
 	}
+
+	hasCache() {
+		return (this.cache !== undefined);
+	}
+
+	getCache(): T | undefined {
+		return this.cache;
+	}
 }

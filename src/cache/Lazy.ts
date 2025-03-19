@@ -3,7 +3,6 @@ export class Lazy<T> {
 	private cache?: T;
 
 	private supplier: () => T;
-
 	constructor(supplier: () => T) {
 		this.supplier = supplier;
 	}
@@ -17,5 +16,9 @@ export class Lazy<T> {
 
 	reset() {
 		this.cache = undefined;
+	}
+
+	hasCache() {
+		return (this.cache !== undefined);
 	}
 }

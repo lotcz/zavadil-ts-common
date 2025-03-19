@@ -2,10 +2,11 @@ import {EntityClient} from "./EntityClient";
 import {EntityBase} from "../type/Entity";
 import { HashCacheAsync } from "../cache";
 import { RestClient } from "./RestClient";
+import {HashCacheStats} from "../type";
 
 export class EntityCachedClient<T extends EntityBase> extends EntityClient<T> {
 
-	private cache: HashCacheAsync<number, T>;
+	protected cache: HashCacheAsync<number, T>;
 
 	constructor(client: RestClient, name: string, maxSize?: number) {
 		super(client, name);
@@ -28,4 +29,11 @@ export class EntityCachedClient<T extends EntityBase> extends EntityClient<T> {
 		return super.delete(id).then(() => this.cache.reset(id));
 	}
 
+	reset(id?: number) {
+		this.cache.reset(id);
+	}
+
+	getStats(): HashCacheStats {
+		return this.cache.getStats();
+	}
 }
