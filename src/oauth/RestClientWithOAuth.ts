@@ -1,5 +1,5 @@
 import {OAuthTokenManager} from "./OAuthTokenManager";
-import {RestClient, RestClientHeaders} from "../client";
+import {RestClient} from "../client";
 import {IdTokenPayload} from "./OAuthRestClient";
 import {LazyAsync} from "../cache";
 import {StringUtil, JsonUtil} from "../util";
@@ -146,16 +146,17 @@ export class RestClientWithOAuth extends RestClient {
 		return this.getTokenManager().then(m => m.verifyIdToken(token))
 	}
 
-	getHeaders(url: string): Promise<RestClientHeaders> {
+	getHeaders(endpoint: string): Promise<Headers> {
 		return this.getTokenManager()
-			.then(tm => tm.getAccessToken(this.getPrivilege(url)))
+			.then(tm => tm.getAccessToken(this.getPrivilege(endpoint)))
 			.then(
-				(accessToken) => {
-					return {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${accessToken}`
-					}
-				}
+				(accessToken) => super.getHeaders(endpoint)
+					.then(
+						(headers) => {
+							headers.set('Authorization', `Bearer ${accessToken}`);
+							return headers;
+						}
+					)
 			);
 	}
 

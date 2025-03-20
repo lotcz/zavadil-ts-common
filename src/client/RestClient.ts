@@ -1,7 +1,9 @@
 import { StringUtil, PagingUtil, JsonUtil } from "../util";
 import { PagingRequest } from "../type";
 
-export type RestClientHeaders = {};
+export type RequestOptions = RequestInit & {
+	headers: Headers;
+};
 
 export class RestClient {
 
@@ -30,12 +32,10 @@ export class RestClient {
 	/**
 	 * Override this to customize http headers.
 	 */
-	getHeaders(url: string): Promise<RestClientHeaders> {
-		return Promise.resolve(
-			{
-				'Content-Type': 'application/json'
-			}
-		);
+	getHeaders(endpoint: string): Promise<Headers> {
+		const headers = new Headers();
+		headers.set('Content-Type', 'application/json');
+		return Promise.resolve(headers);
 	}
 
 	getUrl(endpoint: string, params?: any): URL {
@@ -51,8 +51,8 @@ export class RestClient {
 		return url;
 	}
 
-	getRequestOptions(url: string, method: string = 'GET', data: object | null = null): Promise<RequestInit> {
-		return this.getHeaders(url)
+	getRequestOptions(endpoint: string, method: string = 'GET', data: object | null = null): Promise<RequestOptions> {
+		return this.getHeaders(endpoint)
 			.then(
 				(headers) => {
 					return {
@@ -65,7 +65,7 @@ export class RestClient {
 			);
 	}
 
-	processRequest(endpoint: string, params?: any, requestOptions?: RequestInit): Promise<Response> {
+	processRequest(endpoint: string, params?: any, requestOptions?: RequestOptions): Promise<Response> {
 		return fetch(this.getUrl(endpoint, params), requestOptions)
 			.then((response) => {
 				if (!response.ok) {
@@ -110,7 +110,7 @@ export class RestClient {
 			});
 	}
 
-	processRequestJson(endpoint: string, params?: any, requestOptions?: object | undefined): Promise<any> {
+	processRequestJson(endpoint: string, params?: any, requestOptions?: RequestOptions): Promise<any> {
 		return this.processRequest(endpoint, params, requestOptions)
 			.then((response) => {
 				return response.text().then(JsonUtil.parseWithDates);
@@ -123,6 +123,14 @@ export class RestClient {
 
 	postJson(url: string, data: object | null = null): Promise<any> {
 		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequestJson(url, null, o));
+	}
+
+	postForm(url: string, data: FormData): Promise<Response> {
+		return this.getRequestOptions(url, 'POST', data)
+			.then(o => {
+				o.headers.delete('Content-Type'); // content type with boundary value will be auto-generated
+				return this.processRequest(url, null, o);
+			});
 	}
 
 	putJson(url: string, data: object | null = null): Promise<any> {
