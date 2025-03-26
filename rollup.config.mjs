@@ -1,6 +1,7 @@
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
+import json from "@rollup/plugin-json";
 import dts from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
 
@@ -22,6 +23,7 @@ export default [
 		plugins: [
 			resolve({ extensions: ['.js', '.ts'] }),
 			commonjs(),
+			json(),
 			typescript({
 				tsconfig: "./tsconfig.json",
 				exclude: [

@@ -27,6 +27,10 @@ export class OAuthTokenManager {
 		this.eventManager.addEventListener('id-token-changed', handler);
 	}
 
+	removeIdTokenChangedHandler(handler: (t: IdTokenPayload) => any) {
+		this.eventManager.removeEventListener('id-token-changed', handler);
+	}
+
 	isTokenExpired(expires?: Date | null): boolean {
 		if (expires === undefined || expires === null) return false;
 		return (expires < new Date());

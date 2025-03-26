@@ -68,7 +68,10 @@ export class RestClientWithOAuth extends RestClient {
 							document.location = location;
 							return Promise.resolve(false);
 						}
-					)
+					).catch((err) => {
+						console.log('Cannot redirect: OAuth info not fetched:', reason);
+						return Promise.reject(err);
+					});
 				}
 			);
 	}
@@ -107,6 +110,10 @@ export class RestClientWithOAuth extends RestClient {
 
 	addIdTokenChangedHandler(handler: () => any) {
 		this.getTokenManager().then((m) => m.addIdTokenChangedHandler(handler));
+	}
+
+	removeIdTokenChangedHandler(handler: () => any) {
+		this.getTokenManager().then((m) => m.removeIdTokenChangedHandler(handler));
 	}
 
 	private getServerInfoInternal(): Promise<ServerOAuthInfoPayload> {

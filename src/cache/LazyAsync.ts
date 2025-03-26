@@ -20,10 +20,10 @@ export class LazyAsync<T> {
 				.then((v: T) => {
 					this.cache = v;
 					this.promise = undefined;
-					return v;
+					return Promise.resolve(v);
 				}).catch((err) => {
 					this.promise = undefined;
-					throw err;
+					return Promise.reject(err);
 				});
 		}
 

@@ -1,0 +1,23 @@
+{
+	"Plugin Integration and Validation Objects": "Pluginy - integrační a validační objekty",
+	"Anonymous": "Anonym",
+	"Administrator": "Administrátor",
+	"Welcome to Incomaker": "Vítejte v Incomakeru",
+	"--welcome-1": "Tento asistent vám pomůže identifikovat problémy a navrhnout řešení pro integraci s Incomakerem.",
+	"--welcome-2": "Integrační proces teprve začínáte? Instrukce krok za krokem naleznete v našem <a target=\"_blank\" href=\"https://docs.google.com/document/d/1ogmxMWez5p0T8Y29eljKuOT8wqZMsdGpeFjltChOGe4/edit#heading=h.3h0ab7s9db51\">integračním manuálu</a>.",
+	"--welcome-3": "Rozhodli jste se implemenovat XML feed sami? Pro detailní popis standardů našeho schématu navštivte <a target=\"_blank\" href=\"https://github.com/incomaker/xml-feed-standards\">dokumentaci XML feedů</a>.",
+	"Plugin Validation": "Validace pluginu",
+	"Plugin API Key": "API klíč pluginu",
+	"Enter valid API key!": "Vložte platný API klíč!",
+	"Value is not a valid API key!": "Hodnota není platný API klíč!",
+	"Plugin not found!": "Plugin nebyl nalezen!",
+	"--api-key-hint": "Pro získání API klíče se musíte přihlásit do vašeho účtu v <a target=\"_blank\" href=\"https://my.incomaker.com/admin/plugin_profile.xhtml\">my.incomaker.com</a> a jít na záložku <strong>E&#8209;shop Info</strong>.",
+	"Validate": "Validovat",
+	"Back": "Zpět",
+	"Started": "Začátek",
+	"Finished": "Konec",
+	"Duration": "Trvání",
+	"Processing Time": "Doba zpracování",
+	"Status": "Stav",
+	"Restart Validation": "Restartovat validaci"
+}
