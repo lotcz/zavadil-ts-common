@@ -12,12 +12,16 @@ export class Localization implements Dictionary {
 
 	addDictionary(language: string, dictionary: Dictionary) {
 		this.dictionaries.set(language, dictionary);
-		this.setLanguage();
+		this.setLanguage(language);
 	}
 
 	hasDictionary(language?: string) {
 		if (!language) return false;
 		return this.dictionaries.has(language);
+	}
+
+	getLanguage(): string | undefined {
+		return this.language;
 	}
 
 	setLanguage(language?: string) {
@@ -30,14 +34,17 @@ export class Localization implements Dictionary {
 		if (!this.language) return key;
 		const d = this.dictionaries.get(this.language);
 		if (!d) return key;
-		return d.translate(key, p);
+		const t = d.translate(key, p);
+		if (t === undefined) return key;
+		return t;
 	}
 }
 
 export class BasicLocalization extends Localization {
-	constructor() {
+	constructor(language?: string) {
 		super();
 		this.addDictionary("cs", new CzechBasicDictionary());
 		this.addDictionary("en", new EnglishBasicDictionary());
+		this.setLanguage(language);
 	}
 }

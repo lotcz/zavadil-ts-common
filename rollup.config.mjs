@@ -21,7 +21,7 @@ export default [
 			},
 		],
 		plugins: [
-			resolve({ extensions: ['.js', '.ts'] }),
+			resolve({ extensions: ['.js', '.ts', '.json'] }),
 			commonjs(),
 			json(),
 			typescript({
