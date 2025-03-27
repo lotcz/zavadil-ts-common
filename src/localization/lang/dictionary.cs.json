@@ -1,14 +1,14 @@
 {
 	"Anonymous": "Anonym",
 	"Administrator": "Administrátor",
-	"Validate": "Validovat",
 	"Back": "Zpět",
-	"Started": "Začátek",
-	"Finished": "Konec",
-	"Duration": "Trvání",
-	"Processing Time": "Doba zpracování",
+	"Image": "Obrázek",
 	"Status": "Stav",
+	"State": "Stav",
+	"System": "Systém",
+  "Date": "Datum",
   "Page": "Stránka",
   "Page size" : "Velikost stránky",
-  "Total items": "Celkem záznamů"
+  "Total items": "Celkem záznamů",
+  "Log out": "Odhlásit"
 }

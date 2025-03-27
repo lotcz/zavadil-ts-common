@@ -1,4 +1,4 @@
-import {CzechBasicDictionary, Dictionary, EnglishBasicDictionary, TranslateParams} from "./Dictionary";
+import {CzechBasicDictionary, Dictionary, DictionaryWithFallback, EnglishBasicDictionary, TranslateParams} from "./Dictionary";
 
 export class Localization implements Dictionary {
 
@@ -11,8 +11,12 @@ export class Localization implements Dictionary {
 	}
 
 	addDictionary(language: string, dictionary: Dictionary) {
-		this.dictionaries.set(language, dictionary);
-		this.setLanguage(language);
+		const existing = this.dictionaries.get(language);
+		if (existing) {
+			this.dictionaries.set(language, new DictionaryWithFallback(dictionary, existing));
+		} else {
+			this.dictionaries.set(language, dictionary);
+		}
 	}
 
 	hasDictionary(language?: string) {
