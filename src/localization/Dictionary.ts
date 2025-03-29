@@ -1,5 +1,5 @@
 import CzechBasicData from './lang/dictionary.cs.json';
-import EnglishBasicData from './lang/dictionary.cs.json';
+import EnglishBasicData from './lang/dictionary.en.json';
 
 export type TranslateParams = {
 	tags?: Array<string>;

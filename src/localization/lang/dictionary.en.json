@@ -1,6 +1,3 @@
 {
-	"--welcome-1": "This assistant will help you identify problems and suggest solutions about integration into Incomaker.",
-	"--welcome-2": "Are you just starting the integration process? You will find step-by-step instructions in our <a target=\"_blank\" href=\"https://docs.google.com/document/d/1ogmxMWez5p0T8Y29eljKuOT8wqZMsdGpeFjltChOGe4/edit#heading=h.3h0ab7s9db51\">integration manual</a>.",
-	"--welcome-3": "Are you implementing the XML feed on your own? For detailed information about our standard schema check <a target=\"_blank\" href=\"https://github.com/incomaker/xml-feed-standards\">XML feed documentation</a>.",
-	"--api-key-hint": "To obtain an API key, you must log into your account on <a target=\"_blank\" href=\"https://my.incomaker.com/admin/plugin_profile.xhtml\">my.incomaker.com</a> and go to <strong>E&#8209;shop Info</strong> tab."
+	"--self-name": "English"
 }

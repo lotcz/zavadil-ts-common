@@ -28,15 +28,20 @@ export class Localization implements Dictionary {
 		return this.language;
 	}
 
+	getLanguages(): Array<string> {
+		return Array.from(this.dictionaries.keys());
+	}
+
 	setLanguage(language?: string) {
 		this.language = language && this.hasDictionary(language)
 			? language
 			: this.hasDictionary(navigator.language) ? navigator.language : undefined
 	}
 
-	translate(key: string, p?: TranslateParams) {
-		if (!this.language) return key;
-		const d = this.dictionaries.get(this.language);
+	translate(key: string, p?: TranslateParams, language?: string) {
+		language = language ? language : this.language;
+		if (!language) return key;
+		const d = this.dictionaries.get(language);
 		if (!d) return key;
 		const t = d.translate(key, p);
 		if (t === undefined) return key;
