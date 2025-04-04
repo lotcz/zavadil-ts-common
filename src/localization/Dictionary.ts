@@ -9,8 +9,13 @@ export interface Dictionary {
 	translate: (key: string, p?: TranslateParams) => string | undefined;
 }
 
+export type DictionaryMemoryValue = {
+	tags?: Array<string>;
+	value: string;
+}
+
 export interface DictionaryMemoryData {
-	[key: string]: string;
+	[key: string]:  string | Array<DictionaryMemoryValue>;
 }
 
 export class MemoryDictionary implements Dictionary {
@@ -19,11 +24,23 @@ export class MemoryDictionary implements Dictionary {
 
 	constructor(data: DictionaryMemoryData) {
 		this.data = data;
-
 	}
 
 	translate(key: string, p?: TranslateParams) {
-		return this.data[key];
+		const r = this.data[key];
+		if (r === undefined || typeof r === 'string') return r;
+		const def = r.find(
+			(v) => (v.tags === undefined || v.tags.length === 0)
+		);
+		if ((p === undefined || p.tags === undefined || p.tags.length === 0) && def !== undefined) return def.value;
+		const cands = r.filter(
+			(v) => {
+				if (v.tags === undefined || v.tags.length === 0) return false;
+				return p && p.tags && p.tags.every((t) => v.tags && v.tags.includes(t));
+			}
+		);
+		if (cands.length > 0) return cands[0].value;
+		return def ? def.value : undefined;
 	};
 
 }
