@@ -12,11 +12,15 @@
   "Page size" : "Velikost stránky",
   "Total items": "Celkem záznamů",
   "Log out": "Odhlásit",
+  "Move": "Přesunout",
+  "Close": "Zavřít",
+  "Edit": "Upravit",
+  "Select": "Vybrat",
   "New": [
     {
-    "tags": ["feminine"],
-    "value": "Nová"
-  },
+      "tags": ["feminine"],
+      "value": "Nová"
+    },
     {
       "value": "Nový"
     }
