@@ -3,6 +3,7 @@
 	"Anonymous": "Anonym",
 	"Administrator": "Administrátor",
 	"Back": "Zpět",
+	"Language": "Jazyk",
 	"Image": "Obrázek",
 	"Status": "Stav",
 	"State": "Stav",
@@ -15,6 +16,7 @@
   "Move": "Přesunout",
   "Close": "Zavřít",
   "Edit": "Upravit",
+  "Save": "Uložit",
   "Select": "Vybrat",
   "New": [
     {
@@ -23,6 +25,15 @@
     },
     {
       "value": "Nový"
+    }
+  ],
+  "Name": [
+    {
+      "tags": ["neutral"],
+      "value": "Název"
+    },
+    {
+      "value": "Jméno"
     }
   ]
 }
