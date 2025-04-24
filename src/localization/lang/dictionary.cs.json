@@ -3,6 +3,7 @@
 	"Anonymous": "Anonym",
 	"Administrator": "Administrátor",
 	"Back": "Zpět",
+	"File": "Soubor",
 	"Language": "Jazyk",
 	"Image": "Obrázek",
 	"Status": "Stav",
@@ -18,6 +19,7 @@
   "Close": "Zavřít",
   "Edit": "Upravit",
   "Save": "Uložit",
+  "Refresh": "Obnovit",
   "Select": "Vybrat",
   "More...": "Více...",
   "New": [
