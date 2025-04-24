@@ -14,10 +14,12 @@
   "Total items": "Celkem záznamů",
   "Log out": "Odhlásit",
   "Move": "Přesunout",
+  "Delete": "Smazat",
   "Close": "Zavřít",
   "Edit": "Upravit",
   "Save": "Uložit",
   "Select": "Vybrat",
+  "More...": "Více...",
   "New": [
     {
       "tags": ["feminine"],

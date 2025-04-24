@@ -133,6 +133,14 @@ export class RestClient {
 			});
 	}
 
+	postFormJson(url: string, data: FormData): Promise<any> {
+		return this.getRequestOptions(url, 'POST', data)
+			.then(o => {
+				o.headers.delete('Content-Type'); // content type with boundary value will be auto-generated
+				return this.processRequestJson(url, null, o);
+			});
+	}
+
 	putJson(url: string, data: object | null = null): Promise<any> {
 		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequestJson(url, null, o));
 	}
