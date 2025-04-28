@@ -90,19 +90,17 @@ export class OAuthTokenManager {
 		this.eventManager.triggerEvent('id-token-changed', token);
 	}
 
-	verifyIdToken(token: string): Promise<boolean> {
+	verifyIdToken(token: string): Promise<any> {
 		return this.oAuthServer.verifyIdToken(token)
-			.then((t) => this.setIdToken(t))
-			.then(() => true)
+			.then((t) => this.setIdToken(t));
 	}
 
-	login(login: string, password: string): Promise<boolean> {
+	login(login: string, password: string): Promise<any> {
 		this.reset();
 		return this.oAuthServer.requestIdTokenFromLogin({login: login, password: password, targetAudience: this.audience})
 			.then(
 				(t) => {
 					this.setIdToken(t);
-					return true;
 				})
 	}
 

@@ -13,6 +13,8 @@ export type ServerOAuthInfoPayload = {
 
 export class RestClientWithOAuth extends RestClient {
 
+	private tokenName = 'token';
+
 	private insecureClient: RestClient;
 
 	private tokenManager: LazyAsync<OAuthTokenManager>;
@@ -20,6 +22,8 @@ export class RestClientWithOAuth extends RestClient {
 	private serverInfo: LazyAsync<ServerOAuthInfoPayload>;
 
 	private defaultPrivilege: string;
+
+	private redirecting: boolean = false;
 
 	constructor(url: string, defaultPrivilege: string = '*') {
 		super(url);
@@ -32,41 +36,40 @@ export class RestClientWithOAuth extends RestClient {
 		this.tokenManager = new LazyAsync<OAuthTokenManager>(() => this.getTokenManagerInternal());
 	}
 
-	initializeIdToken(): Promise<boolean> {
+	initializeIdToken(): Promise<any> {
 		const urlToken = this.getIdTokenFromUrl();
 		if (urlToken !== null) {
-			return this.setIdTokenRaw(urlToken);
+			return this.setIdTokenRaw(urlToken)
+				.then(() => {
+					console.log("Redirecting to url without id token");
+					this.redirecting = true;
+					document.location.href = this.deleteIdTokenFromUrl();
+				});
 		} else {
 			const storageToken = this.getIdTokenFromLocalStorage();
 			if (storageToken) return this.setIdToken(storageToken);
 		}
-		return Promise.resolve(false);
+		return Promise.reject("No valid ID token!");
 	}
 
 	/**
 	 * Attempt to get ID token from URL or storage, redirect to login page when not successful
 	 */
-	initialize(): Promise<boolean> {
+	initialize(): Promise<any> {
 		return this.initializeIdToken()
-			.then(
-				(success: boolean) => {
-					if (success) return this.checkAccessToken();
-					return Promise.reject("ID token initialization failed!");
-				}
-			).then(
-				(success: boolean) => {
-					if (!success) return Promise.reject("Access token initialization failed!");
-					return true;
-				}
-			).catch(
+			.then(() => {
+				if (!this.redirecting) this.checkAccessToken();
+			})
+			.catch(
 				(reason) => {
+					if (this.redirecting) return Promise.reject("Already redirecting!");
 					console.log('OAuth initialization failed:', reason);
 					return this.getServerInfo().then(
 						(si) => {
-							const location = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${document.location}`;
-							console.log('Redirecting:', location);
-							document.location = location;
-							return Promise.resolve(false);
+							const location = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${this.deleteIdTokenFromUrl()}`;
+							console.log('Redirecting to login page:', location);
+							this.redirecting = true;
+							document.location.href = location;
 						}
 					).catch((err) => {
 						console.log('Cannot redirect: OAuth info not fetched:', reason);
@@ -90,9 +93,15 @@ export class RestClientWithOAuth extends RestClient {
 		return this.defaultPrivilege;
 	}
 
+	deleteIdTokenFromUrl(): string {
+		const url = new URL(document.location.toString());
+		url.searchParams.delete(this.tokenName);
+		return url.toString();
+	}
+
 	getIdTokenFromUrl(): string | null {
 		const up = new URLSearchParams(document.location.search);
-		return up.get('token');
+		return up.get(this.tokenName);
 	}
 
 	getIdTokenFromLocalStorage(): IdTokenPayload | null | undefined {
@@ -139,17 +148,16 @@ export class RestClientWithOAuth extends RestClient {
 		return this.tokenManager.get();
 	}
 
-	login(login: string, password: string): Promise<boolean> {
+	login(login: string, password: string): Promise<any> {
 		return this.getTokenManager().then((m) => m.login(login, password));
 	}
 
-	setIdToken(token: IdTokenPayload): Promise<boolean> {
+	setIdToken(token: IdTokenPayload): Promise<any> {
 		return this.getTokenManager()
-			.then((m) => m.setIdToken(token))
-			.then(() => true)
+			.then((m) => m.setIdToken(token));
 	}
 
-	setIdTokenRaw(token: string): Promise<boolean> {
+	setIdTokenRaw(token: string): Promise<any> {
 		return this.getTokenManager().then(m => m.verifyIdToken(token))
 	}
 
@@ -168,19 +176,13 @@ export class RestClientWithOAuth extends RestClient {
 	}
 
 	/**
-	 * Try to obtain access token, then return true if everything is okay.
+	 * Try to obtain access token, then return if everything is okay.
 	 * This is basically only used when initializing and trying to determine whether we need to redirect user to login page
 	 */
-	checkAccessToken(privilege?: string): Promise<boolean> {
+	checkAccessToken(privilege?: string): Promise<any> {
 		return this.getTokenManager()
 			.then(tm => tm.getAccessToken(StringUtil.getNonEmpty(privilege, this.defaultPrivilege)))
-			.then((accessToken) => true)
-			.catch(
-				(e) => {
-					console.error('Access token check failed:', e);
-					return false;
-				}
-			);
+			.catch((e) => Promise.reject(`Access token check failed: ${e}`));
 	}
 
 }
