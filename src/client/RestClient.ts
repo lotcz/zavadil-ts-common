@@ -7,10 +7,19 @@ export type RequestOptions = RequestInit & {
 
 export class RestClient {
 
-	private baseUrl: string;
+	private baseUrl: URL;
 
 	constructor(baseUrl: string) {
-		this.baseUrl = baseUrl;
+		if (StringUtil.isBlank(baseUrl)) {
+			this.baseUrl = RestClient.baseHostUrl();
+			return;
+		}
+		if (!baseUrl.endsWith('/')) baseUrl = baseUrl + '/';
+		this.baseUrl = baseUrl.startsWith("http") ? new URL(baseUrl) : new URL(baseUrl, RestClient.baseHostUrl());
+	}
+
+	static baseHostUrl(): URL {
+		return new URL(`${window.location.protocol}//${window.location.host}/`);
 	}
 
 	static pagingRequestToQueryParams(pr?: PagingRequest | null): any {
@@ -38,9 +47,12 @@ export class RestClient {
 		return Promise.resolve(headers);
 	}
 
+	getBaseUrl(): URL {
+		return this.baseUrl;
+	}
+
 	getUrl(endpoint: string, params?: any): URL {
-		const endpointUrl = [StringUtil.trimTrailingSlashes(this.baseUrl), StringUtil.trimLeadingSlashes(endpoint)].join('/');
-		const url = new URL(endpointUrl);
+		const url = new URL(StringUtil.trimLeadingSlashes(endpoint), this.baseUrl);
 		if (params) {
 			Object.keys(params).forEach((key) => {
 				const value = params[key];
