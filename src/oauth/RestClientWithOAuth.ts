@@ -55,26 +55,34 @@ export class RestClientWithOAuth extends RestClient {
 	/**
 	 * Attempt to get ID token from URL or storage, redirect to login page when not successful
 	 */
+	redirectToLogin(): Promise<any> {
+		if (this.redirecting) return Promise.reject("Already redirecting!");
+		return this.getServerInfo().then(
+			(si) => {
+				const location = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${this.deleteIdTokenFromUrl()}`;
+				console.log('Redirecting to login page:', location);
+				this.redirecting = true;
+				document.location.href = location;
+			}
+		).catch((err) => {
+			console.error('Redirection failed: OAuth info not fetched:', err);
+			return Promise.reject(err);
+		});
+	}
+
+	/**
+	 * Attempt to get ID token from URL or storage, redirect to login page when not successful
+	 */
 	initialize(): Promise<any> {
 		return this.initializeIdToken()
 			.then(() => {
-				if (!this.redirecting) this.checkAccessToken();
+				if (!this.redirecting) return this.checkAccessToken();
 			})
 			.catch(
 				(reason) => {
 					if (this.redirecting) return Promise.reject("Already redirecting!");
 					console.log('OAuth initialization failed:', reason);
-					return this.getServerInfo().then(
-						(si) => {
-							const location = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${this.deleteIdTokenFromUrl()}`;
-							console.log('Redirecting to login page:', location);
-							this.redirecting = true;
-							document.location.href = location;
-						}
-					).catch((err) => {
-						console.log('Cannot redirect: OAuth info not fetched:', reason);
-						return Promise.reject(err);
-					});
+					return this.redirectToLogin();
 				}
 			);
 	}
@@ -96,7 +104,7 @@ export class RestClientWithOAuth extends RestClient {
 	deleteIdTokenFromUrl(): string {
 		const url = new URL(document.location.toString());
 		url.searchParams.delete(this.tokenName);
-		return url.toString();
+		return StringUtil.trimTrailingSlashes(url.toString());
 	}
 
 	getIdTokenFromUrl(): string | null {

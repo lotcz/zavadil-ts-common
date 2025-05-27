@@ -3,6 +3,20 @@ import {JsonUtil} from "../src/util/JsonUtil";
 import {RestClient} from "../src";
 
 describe('testing StringUtil', () => {
+	test('isEmpty', () => {
+		expect(StringUtil.isEmpty('test')).toBe(false);
+		expect(StringUtil.isEmpty('  ')).toBe(false);
+		expect(StringUtil.isEmpty('')).toBe(true);
+		expect(StringUtil.isEmpty(null)).toBe(true);
+		expect(StringUtil.isEmpty(undefined)).toBe(true);
+	});
+	test('isBlank', () => {
+		expect(StringUtil.isBlank('test')).toBe(false);
+		expect(StringUtil.isBlank('  ')).toBe(true);
+		expect(StringUtil.isBlank('')).toBe(true);
+		expect(StringUtil.isBlank(null)).toBe(true);
+		expect(StringUtil.isBlank(undefined)).toBe(true);
+	});
 	test('getNonEmpty', () => {
 		expect(StringUtil.getNonEmpty('test')).toBe('test');
 		expect(StringUtil.getNonEmpty('', 'test')).toBe('test');

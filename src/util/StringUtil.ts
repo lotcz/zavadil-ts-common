@@ -1,9 +1,12 @@
-import { ObjectUtil } from "./ObjectUtil";
+export class StringUtil {
 
-export class StringUtil extends ObjectUtil {
+	static toString(s: any) {
+		return typeof s === 'string' ? s : s?.toString?.() ?? '';
+	}
 
 	static isEmpty(str: string | null | undefined): boolean {
-		return ObjectUtil.isEmpty(str) || str?.length === 0;
+		if (typeof str !== 'string') return StringUtil.isEmpty(StringUtil.toString(str));
+		return str.length === 0;
 	}
 
 	static notEmpty(str: string | null | undefined): boolean {
