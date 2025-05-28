@@ -23,7 +23,7 @@ export class RestClientWithOAuth extends RestClient {
 
 	private defaultPrivilege: string;
 
-	private redirecting: boolean = false;
+	private redirecting?: string;
 
 	constructor(url: string, defaultPrivilege: string = '*') {
 		super(url);
@@ -36,15 +36,28 @@ export class RestClientWithOAuth extends RestClient {
 		this.tokenManager = new LazyAsync<OAuthTokenManager>(() => this.getTokenManagerInternal());
 	}
 
+	isRedirecting(): boolean {
+		return StringUtil.notBlank(this.redirecting);
+	}
+
+	redirectingTo(): string {
+		return StringUtil.getNonEmpty(this.redirecting);
+	}
+
+	redirectTo(url: string): Promise<any> {
+		this.redirecting = url;
+		document.location.href = url;
+		return Promise.reject(`Redirecting to ${url}`);
+	}
+
 	initializeIdToken(): Promise<any> {
 		const urlToken = this.getIdTokenFromUrl();
 		if (urlToken !== null) {
-			return this.setIdTokenRaw(urlToken)
-				.then(() => {
-					console.log("Redirecting to url without id token");
-					this.redirecting = true;
-					document.location.href = this.deleteIdTokenFromUrl();
-				});
+			return this
+				.setIdTokenRaw(urlToken)
+				.then(
+					() => this.redirectTo(this.deleteIdTokenFromUrl())
+				);
 		} else {
 			const storageToken = this.getIdTokenFromLocalStorage();
 			if (storageToken) return this.setIdToken(storageToken);
@@ -56,13 +69,11 @@ export class RestClientWithOAuth extends RestClient {
 	 * Attempt to get ID token from URL or storage, redirect to login page when not successful
 	 */
 	redirectToLogin(): Promise<any> {
-		if (this.redirecting) return Promise.reject("Already redirecting!");
+		if (this.isRedirecting()) return Promise.reject("Already redirecting!");
 		return this.getServerInfo().then(
 			(si) => {
 				const location = `${si.oauthServerUrl}/login?app_name=${si.targetAudience}&redirect_url=${this.deleteIdTokenFromUrl()}`;
-				console.log('Redirecting to login page:', location);
-				this.redirecting = true;
-				document.location.href = location;
+				return this.redirectTo(location);
 			}
 		).catch((err) => {
 			console.error('Redirection failed: OAuth info not fetched:', err);
@@ -76,11 +87,10 @@ export class RestClientWithOAuth extends RestClient {
 	initialize(): Promise<any> {
 		return this.initializeIdToken()
 			.then(() => {
-				if (!this.redirecting) return this.checkAccessToken();
+				if (!this.isRedirecting()) return this.checkAccessToken();
 			})
 			.catch(
 				(reason) => {
-					if (this.redirecting) return Promise.reject("Already redirecting!");
 					console.log('OAuth initialization failed:', reason);
 					return this.redirectToLogin();
 				}
