@@ -1,13 +1,12 @@
 import {AccessTokenPayload, IdTokenPayload, OAuthRestClient} from "./OAuthRestClient";
 import {EventManager} from "../component";
 import {StringUtil} from "../util";
+import {OAuthIdTokenProvider} from "./tokenprovider/OAuthIdTokenProvider";
 
 /**
  * Manages refresh of id and access tokens.
  */
-export class OAuthTokenManager {
-
-	private eventManager: EventManager = new EventManager();
+export class OAuthTokenManager implements OAuthIdTokenProvider {
 
 	oAuthServer: OAuthRestClient;
 
@@ -15,20 +14,15 @@ export class OAuthTokenManager {
 
 	idToken?: IdTokenPayload;
 
+	freshIdTokenProvider: OAuthIdTokenProvider;
+
 	accessTokens: Map<string, AccessTokenPayload>;
 
-	constructor(oAuthServerBaseUrl: string, targetAudience: string) {
+	constructor(oAuthServerBaseUrl: string, targetAudience: string, freshIdTokenProvider: OAuthIdTokenProvider) {
+		this.freshIdTokenProvider = freshIdTokenProvider;
 		this.audience = targetAudience;
 		this.oAuthServer = new OAuthRestClient(oAuthServerBaseUrl);
 		this.accessTokens = new Map<string, AccessTokenPayload>();
-	}
-
-	addIdTokenChangedHandler(handler: (t: IdTokenPayload) => any) {
-		this.eventManager.addEventListener('id-token-changed', handler);
-	}
-
-	removeIdTokenChangedHandler(handler: (t: IdTokenPayload) => any) {
-		this.eventManager.removeEventListener('id-token-changed', handler);
 	}
 
 	isTokenExpired(expires?: Date | null): boolean {
@@ -61,51 +55,66 @@ export class OAuthTokenManager {
 
 	reset() {
 		this.idToken = undefined;
-		this.eventManager.triggerEvent('id-token-changed', undefined);
 		this.accessTokens.clear();
 	}
 
-	getIdToken(): Promise<string> {
+	/**
+	 * Get stored id token or ask the provider, this will trigger redirect to login screen in case of the default provider
+	 */
+	getIdTokenInternal(): Promise<IdTokenPayload> {
 		if (this.idToken === undefined || !this.hasValidIdToken()) {
-			return Promise.reject("No valid ID token!");
+			return this.freshIdTokenProvider.getIdToken();
 		}
-		if (this.isTokenReadyForRefresh(this.idToken.issuedAt, this.idToken.expires)) {
-			return this.oAuthServer
-				.refreshIdToken({idToken: this.idToken.token})
-				.then(
-					(t) => {
-						this.setIdToken(t);
-						return t.token;
+		return Promise.resolve(this.idToken);
+	}
+
+	/**
+	 * Get id token, refresh it if needed
+	 */
+	getIdToken(): Promise<IdTokenPayload> {
+		return this.getIdTokenInternal()
+			.then(
+				(t: IdTokenPayload) => {
+					if (!this.isValidIdToken(t)) {
+						return Promise.reject('Received invalid ID token!');
 					}
-				);
-		}
-		return Promise.resolve(this.idToken.token);
+					if (this.isTokenReadyForRefresh(t.issuedAt, t.expires)) {
+						return this.oAuthServer
+							.refreshIdToken({idToken: t.token})
+							.then(
+								(t) => {
+									this.setIdToken(t);
+									return t;
+								}
+							);
+					}
+					this.setIdToken(t);
+					return Promise.resolve(t);
+				}
+			);
+	}
+
+	getIdTokenRaw(): Promise<string> {
+		return this.getIdToken().then(t => t.token);
 	}
 
 	setIdToken(token?: IdTokenPayload) {
-		if (!this.isValidIdToken(token)) {
-			throw new Error("Received ID token is not valid!");
-		}
 		this.idToken = token;
-		this.eventManager.triggerEvent('id-token-changed', token);
 	}
 
-	verifyIdToken(token: string): Promise<any> {
-		return this.oAuthServer.verifyIdToken(token)
-			.then((t) => this.setIdToken(t));
+	verifyIdToken(token: string): Promise<IdTokenPayload> {
+		return this.oAuthServer.verifyIdToken(token);
 	}
 
 	login(login: string, password: string): Promise<any> {
 		this.reset();
-		return this.oAuthServer.requestIdTokenFromLogin({login: login, password: password, targetAudience: this.audience})
-			.then(
-				(t) => {
-					this.setIdToken(t);
-				})
+		return this.oAuthServer
+			.requestIdTokenFromLogin({login: login, password: password, targetAudience: this.audience})
+			.then((t) => this.setIdToken(t));
 	}
 
 	private getAccessTokenInternal(privilege: string): Promise<AccessTokenPayload> {
-		return this.getIdToken()
+		return this.getIdTokenRaw()
 			.then(
 				(idToken: string) => this.oAuthServer
 					.requestAccessToken({idToken: idToken, targetAudience: this.audience, privilege: privilege})
