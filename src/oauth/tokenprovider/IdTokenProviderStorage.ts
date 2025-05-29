@@ -1,6 +1,7 @@
 import {OAuthIdTokenProvider} from "./OAuthIdTokenProvider";
 import {IdTokenPayload} from "../OAuthRestClient";
 import {JsonUtil} from "../../util";
+import {OAuthUtil} from "../../util/OAuthUtil";
 
 export class IdTokenProviderStorage implements OAuthIdTokenProvider {
 
@@ -25,8 +26,8 @@ export class IdTokenProviderStorage implements OAuthIdTokenProvider {
 
 	getIdToken(): Promise<IdTokenPayload> {
         const token = this.getIdTokenFromLocalStorage();
-		if (token) return Promise.resolve(token);
-		return Promise.reject("No token found in storage!");
+		if (token && OAuthUtil.isValidToken(token)) return Promise.resolve(token);
+		return Promise.reject("No valid token found in storage!");
     }
 
 }
