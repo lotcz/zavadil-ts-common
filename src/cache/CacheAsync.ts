@@ -1,28 +1,21 @@
-export class CacheAsync<T> {
+import {LazyAsync} from "./LazyAsync";
 
-	private cache?: T;
-
-	private supplier: () => Promise<T>;
+export class CacheAsync<T> extends LazyAsync<T> {
 
 	private maxAgeMs?: number;
 
 	private expires?: Date;
 
 	constructor(supplier: () => Promise<T>, maxAgeMs?: number) {
-		this.supplier = supplier;
+		super(supplier);
 		this.maxAgeMs = maxAgeMs;
 	}
 
 	get(): Promise<T> {
-		if (this.cache === undefined || (this.expires && this.expires > new Date())) {
-			return this.supplier()
-				.then((v: T) => {
-					this.set(v);
-					return v;
-				});
-		} else {
-			return Promise.resolve(this.cache);
+		if (this.expires && this.expires > new Date()) {
+			this.reset();
 		}
+		return super.get();
 	}
 
 	set(v: T, expires?: Date) {
@@ -33,11 +26,4 @@ export class CacheAsync<T> {
 		}
 	}
 
-	hasCache() {
-		return (this.cache !== undefined);
-	}
-
-	getCache(): T | undefined {
-		return this.cache;
-	}
 }

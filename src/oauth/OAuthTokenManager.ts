@@ -32,9 +32,10 @@ export class OAuthTokenManager implements OAuthIdTokenProvider {
 		return OAuthUtil.isValidToken(this.accessTokens.get(privilege));
 	}
 
-	reset() {
+	reset(): Promise<any> {
 		this.idToken = undefined;
 		this.accessTokens.clear();
+		return this.freshIdTokenProvider.reset();
 	}
 
 	/**
@@ -55,6 +56,7 @@ export class OAuthTokenManager implements OAuthIdTokenProvider {
 			.then(
 				(t: IdTokenPayload) => {
 					if (!OAuthUtil.isValidToken(t)) {
+						console.log("invalid token", t);
 						return Promise.reject('Received invalid ID token!');
 					}
 					if (OAuthUtil.isTokenReadyForRefresh(t)) {

@@ -5,7 +5,7 @@ export default class UrlUtil {
 	static deleteParamFromUrl(url: string, paramName: string): string {
 		const urlObj = new URL(url);
 		urlObj.searchParams.delete(paramName);
-		return StringUtil.trimTrailingSlashes(url.toString());
+		return StringUtil.trimTrailingSlashes(urlObj.toString());
 	}
 
 	static extractParamFromUrl(url: string, name: string): string | null {

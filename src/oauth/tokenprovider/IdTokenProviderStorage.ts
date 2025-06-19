@@ -8,7 +8,7 @@ export class IdTokenProviderStorage implements OAuthIdTokenProvider {
 	key: string;
 
 	constructor(storageKey?: string) {
-		this.key = storageKey || '';
+		this.key = storageKey || 'id-token';
 	}
 
 	saveIdTokenToLocalStorage(token: IdTokenPayload | null) {
@@ -30,4 +30,8 @@ export class IdTokenProviderStorage implements OAuthIdTokenProvider {
 		return Promise.reject("No valid token found in storage!");
     }
 
+	reset(): Promise<any> {
+		this.saveIdTokenToLocalStorage(null);
+		return Promise.resolve();
+	}
 }

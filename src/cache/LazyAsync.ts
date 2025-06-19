@@ -1,8 +1,8 @@
 export class LazyAsync<T> {
 
-	private cache?: T;
+	protected cache?: T;
 
-	private supplier: () => Promise<T>;
+	protected supplier: () => Promise<T>;
 
 	private promise?: Promise<T>;
 

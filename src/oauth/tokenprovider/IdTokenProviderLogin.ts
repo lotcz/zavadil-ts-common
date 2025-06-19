@@ -16,9 +16,6 @@ export class IdTokenProviderLogin extends RedirectionProvider implements OAuthId
 		this.tokenQueryName = tokenQueryName || 'token';
 	}
 
-	/**
-	 * Attempt to get ID token from URL or storage, redirect to login page when not successful
-	 */
 	redirectToLogin(): Promise<any> {
 		return this.client.getServerInfo().then(
 			(si) => {
@@ -36,4 +33,7 @@ export class IdTokenProviderLogin extends RedirectionProvider implements OAuthId
         return this.redirectToLogin();
     }
 
+	reset(): Promise<any> {
+		return Promise.resolve();
+	}
 }

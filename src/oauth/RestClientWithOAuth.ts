@@ -49,9 +49,11 @@ export class RestClientWithOAuth extends RestClient implements OAuthIdTokenProvi
 	}
 
 	logout(): Promise<any> {
-		return this.getTokenManager()
-			.then((m) => m.reset())
-			.then(() => this.initialize());
+		return this.reset().then(() => this.initialize());
+	}
+
+	reset(): Promise<any> {
+		return this.getTokenManager().then((m) => m.reset());
 	}
 
 	/**

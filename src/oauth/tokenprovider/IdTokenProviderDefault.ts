@@ -24,12 +24,12 @@ export class IdTokenProviderDefault implements OAuthIdTokenProvider {
 			.getIdToken()
 			.catch(
 				(err) => {
-					console.log("No token in url, loading from storage", err);
+					console.log("No token in url, loading from storage:", err);
 					return this.storage
 						.getIdToken()
 						.catch(
 							(err) => {
-								console.log("No token in storage, redirecting to login page", err);
+								console.log("No token in storage, redirecting to login page:", err);
 								return this.login.getIdToken();
 							}
 						);
@@ -37,10 +37,16 @@ export class IdTokenProviderDefault implements OAuthIdTokenProvider {
 			)
 			.then(
 				(t) => {
+					console.log("Token found, saving to storage...");
 					this.storage.saveIdTokenToLocalStorage(t);
-					return t;
+					// redirect if token is in url
+					return this.url.reset().then(() => t);
 				}
 			);
     }
+
+	reset(): Promise<any> {
+		return this.storage.reset().then(() => this.url.reset());
+	}
 
 }
