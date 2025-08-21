@@ -15,36 +15,47 @@ export class DateUtil {
 		return d;
 	}
 
-	static formatDateForHumans(d: Date | string | null | undefined, showTime = false): string {
+	static formatDateForHumans(d: Date | string | null | undefined, showTime: boolean = false): string {
 		d = DateUtil.parseDate(d);
-		if (!d) return "";
+		if (!d) return '';
 
 		const year = d.getFullYear();
 		const month = DateUtil.formatNumber(d.getMonth() + 1);
 		const day = DateUtil.formatNumber(d.getDate());
 
-		const date = `${year}-${month}-${day}`
 		if (!showTime) {
-			return date;
+			return `${year}-${month}-${day}`;
 		}
 
 		const hours = DateUtil.formatNumber(d.getHours());
 		const minutes = DateUtil.formatNumber(d.getMinutes());
 		const seconds = DateUtil.formatNumber(d.getSeconds());
-		return `${date} ${hours}:${minutes}:${seconds}`;
+		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 	}
 
 	static formatDateTimeForHumans(d: Date | string | null | undefined): string {
 		return DateUtil.formatDateForHumans(d, true);
 	}
 
-	static formatDateForInput(d: any): string {
-		const date = DateUtil.parseDate(d);
-		if (date === undefined) return '';
-		const year = date.getFullYear();
-		const month = DateUtil.formatNumber(date.getMonth() + 1);
-		const day = DateUtil.formatNumber(date.getDate());
-		return `${year}-${month}-${day}`;
+	static formatDateForInput(d: any, showTime: boolean = false): string {
+		d = DateUtil.parseDate(d);
+		if (!d) return '';
+		const year = d.getFullYear();
+		const month = DateUtil.formatNumber(d.getMonth() + 1);
+		const day = DateUtil.formatNumber(d.getDate());
+
+		if (!showTime) {
+			return `${year}-${month}-${day}`;
+		}
+
+		const hours = DateUtil.formatNumber(d.getHours());
+		const minutes = DateUtil.formatNumber(d.getMinutes());
+		const seconds = DateUtil.formatNumber(d.getSeconds());
+		return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+	}
+
+	static formatDateTimeForInput(d: Date | string | null | undefined): string {
+		return DateUtil.formatDateForInput(d, true);
 	}
 
 	static getDurationMs(d1?: Date | string | null, d2?: Date | string | null): number | null {
