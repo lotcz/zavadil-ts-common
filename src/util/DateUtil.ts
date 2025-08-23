@@ -30,7 +30,7 @@ export class DateUtil {
 		const hours = DateUtil.formatNumber(d.getHours());
 		const minutes = DateUtil.formatNumber(d.getMinutes());
 		const seconds = DateUtil.formatNumber(d.getSeconds());
-		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+		return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 	}
 
 	static formatDateTimeForHumans(d: Date | string | null | undefined): string {

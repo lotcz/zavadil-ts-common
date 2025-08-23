@@ -1,6 +1,6 @@
 export class StringUtil {
 
-	static toString(s: any) {
+	static toString(s: any): string {
 		return typeof s === 'string' ? s : s?.toString?.() ?? '';
 	}
 
@@ -9,7 +9,7 @@ export class StringUtil {
 		return str.length === 0;
 	}
 
-	static notEmpty(str: string | null | undefined): boolean {
+	static notEmpty(str: string | null | undefined): str is string {
 		return !StringUtil.isEmpty(str);
 	}
 
@@ -17,7 +17,7 @@ export class StringUtil {
 		return StringUtil.isEmpty(StringUtil.safeTrim(str));
 	}
 
-	static notBlank(str: string | null | undefined): boolean {
+	static notBlank(str: string | null | undefined): str is string {
 		return !StringUtil.isBlank(str);
 	}
 
