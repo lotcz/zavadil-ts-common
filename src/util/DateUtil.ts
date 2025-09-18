@@ -1,4 +1,5 @@
 import {ObjectUtil} from "./ObjectUtil";
+import {NumberUtil} from "./NumberUtil";
 
 export class DateUtil {
 
@@ -93,7 +94,7 @@ export class DateUtil {
 		if (hrs > 0) items.push(`${hrs}h`);
 		if (mins > 0) items.push(`${mins}m`);
 		if (secs > 0 && days === 0 && hrs === 0) items.push(`${secs}s`);
-		if (ms > 0 && days === 0 && hrs === 0 && mins === 0) items.push(`${ms}ms`);
+		if (ms > 0 && days === 0 && hrs === 0 && mins === 0) items.push(`${NumberUtil.round(ms, 2)}ms`);
 
 		return items.join(' ');
 	}
