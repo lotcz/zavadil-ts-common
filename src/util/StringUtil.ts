@@ -4,7 +4,7 @@ export class StringUtil {
 		return typeof s === 'string' ? s : s?.toString?.() ?? '';
 	}
 
-	static isEmpty(str: string | null | undefined): boolean {
+	static isEmpty(str: string | null | undefined): str is null | undefined {
 		if (typeof str !== 'string') return StringUtil.isEmpty(StringUtil.toString(str));
 		return str.length === 0;
 	}
@@ -13,7 +13,7 @@ export class StringUtil {
 		return !StringUtil.isEmpty(str);
 	}
 
-	static isBlank(str: string | null | undefined): boolean {
+	static isBlank(str: string | null | undefined): str is null | undefined | "" {
 		return StringUtil.isEmpty(StringUtil.safeTrim(str));
 	}
 
@@ -30,13 +30,11 @@ export class StringUtil {
 
 	static replace(str: string | null | undefined, find?: null | string, replace?: string): string {
 		if (this.isEmpty(str) || this.isEmpty(find)) return '';
-
-		// @ts-ignore
 		return str.replace(find, String(replace));
 	}
 
-	static containsLineBreaks(str: string | null | undefined): boolean {
-		if (str === null || str === undefined || str.trim().length === 0) return false;
+	static containsLineBreaks(str: string | null | undefined): str is string {
+		if (StringUtil.isBlank(str)) return false;
 		return str.includes("\n");
 	}
 

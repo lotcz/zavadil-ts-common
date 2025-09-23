@@ -2,6 +2,10 @@ import { ObjectUtil } from "./ObjectUtil";
 
 export class NumberUtil extends ObjectUtil {
 
+	static notEmpty(n?: number | null): n is number {
+		return !ObjectUtil.isEmpty(n);
+	}
+
 	static parseNumber(str: string | null | undefined): number | null {
 		if (!str) return null;
 		const n = Number(str);

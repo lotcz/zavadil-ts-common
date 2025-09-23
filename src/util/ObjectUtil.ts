@@ -2,7 +2,7 @@ import {StringUtil} from "./StringUtil";
 
 export class ObjectUtil {
 
-	static isEmpty(obj: any) {
+	static isEmpty(obj: any): obj is null | undefined {
 		return obj === undefined || obj === null;
 	}
 

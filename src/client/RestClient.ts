@@ -133,44 +133,44 @@ export class RestClient {
 		return this.getRequestOptions(url).then(o => this.processRequestJson(url, params, o));
 	}
 
-	postJson(url: string, data: object | null = null): Promise<any> {
-		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequestJson(url, null, o));
+	postJson(url: string, data: object | null = null, params?: any): Promise<any> {
+		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequestJson(url, params, o));
 	}
 
-	postForm(url: string, data: FormData): Promise<Response> {
+	postForm(url: string, data: FormData, params?: any): Promise<Response> {
 		return this.getRequestOptions(url, 'POST', data)
 			.then(o => {
 				o.headers.delete('Content-Type'); // content type with boundary value will be auto-generated
-				return this.processRequest(url, null, o);
+				return this.processRequest(url, params, o);
 			});
 	}
 
-	postFormJson(url: string, data: FormData): Promise<any> {
+	postFormJson(url: string, data: FormData, params?: any): Promise<any> {
 		return this.getRequestOptions(url, 'POST', data)
 			.then(o => {
 				o.headers.delete('Content-Type'); // content type with boundary value will be auto-generated
-				return this.processRequestJson(url, null, o);
+				return this.processRequestJson(url, params, o);
 			});
 	}
 
-	putJson(url: string, data: object | null = null): Promise<any> {
-		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequestJson(url, null, o));
+	putJson(url: string, data: object | null = null, params?: any): Promise<any> {
+		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequestJson(url, params, o));
 	}
 
 	get(endpoint: string, params?: any): Promise<Response> {
 		return this.getRequestOptions(endpoint).then(o => this.processRequest(endpoint, params, o));
 	}
 
-	del(url: string): Promise<Response> {
-		return this.getRequestOptions(url, 'DELETE').then(o => this.processRequest(url, null, o));
+	del(url: string, params?: any): Promise<Response> {
+		return this.getRequestOptions(url, 'DELETE').then(o => this.processRequest(url, params, o));
 	}
 
-	post(url: string, data: object | null = null): Promise<Response> {
-		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequest(url, null, o));
+	post(url: string, data: object | null = null, params?: any): Promise<Response> {
+		return this.getRequestOptions(url, 'POST', data).then(o => this.processRequest(url, params, o));
 	}
 
-	put(url: string, data: object | null = null): Promise<Response> {
-		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequest(url, null, o));
+	put(url: string, data: object | null = null, params?: any): Promise<Response> {
+		return this.getRequestOptions(url, 'PUT', data).then(o => this.processRequest(url, params, o));
 	}
 
 }

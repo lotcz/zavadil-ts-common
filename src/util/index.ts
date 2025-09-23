@@ -7,3 +7,4 @@ export { PagingUtil } from './PagingUtil';
 export { DateUtil } from './DateUtil';
 export { NumberUtil } from './NumberUtil';
 export { JsonUtil } from './JsonUtil';
+export { HashUtil } from './HashUtil';
