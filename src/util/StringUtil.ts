@@ -1,11 +1,17 @@
+import {ObjectUtil} from "./ObjectUtil";
+
 export class StringUtil {
 
+	static isString(s: any): boolean {
+		return typeof s === 'string';
+	}
+
 	static toString(s: any): string {
-		return typeof s === 'string' ? s : s?.toString?.() ?? '';
+		return StringUtil.isString(s) ? s : s?.toString?.() ?? '';
 	}
 
 	static isEmpty(str: string | null | undefined): str is null | undefined {
-		if (typeof str !== 'string') return StringUtil.isEmpty(StringUtil.toString(str));
+		if (ObjectUtil.isEmpty(str)) return true;
 		return str.length === 0;
 	}
 
@@ -40,27 +46,22 @@ export class StringUtil {
 
 	static trimLeadingSlashes(str: string | null): string {
 		if (this.isEmpty(str)) return '';
-
-		// @ts-ignore
-		return str.replace(/^\//g, '');
+		return StringUtil.toString(str).replace(/^\//g, '');
 	}
 
 	static trimTrailingSlashes(str: string | null): string {
 		if (this.isEmpty(str)) return '';
-
-		// @ts-ignore
-		return str.replace(/\/$/g, '');
+		return StringUtil.toString(str).replace(/\/$/g, '');
 	}
 
 	static trimSlashes(str: string | null): string {
 		if (this.isEmpty(str)) return '';
-
-		// @ts-ignore
-		return str.replace(/^\/|\/$/g, '');
+		return StringUtil.toString(str).replace(/^\/|\/$/g, '');
 	}
 
 	static safeTruncate(str: string | null | undefined, len: number, ellipsis: string = ''): string {
 		if (StringUtil.isEmpty(str) || !str) return '';
+		str = StringUtil.toString(str);
 		if (str.length <= len) return String(str);
 		return str.substring(0, len - ellipsis.length) + ellipsis;
 	}
@@ -70,18 +71,18 @@ export class StringUtil {
 	}
 
 	static safeTrim(str: string | null | undefined): string {
-		if (StringUtil.isEmpty(str) || !str) return '';
-		return str.trim();
+		if (StringUtil.isEmpty(str)) return '';
+		return StringUtil.toString(str).trim();
 	}
 
 	static safeLowercase(str: string | null | undefined): string {
 		if (StringUtil.isEmpty(str) || !str) return '';
-		return str.toLowerCase();
+		return StringUtil.toString(str).toLowerCase();
 	}
 
 	static safeUppercase(str: string | null | undefined): string {
 		if (StringUtil.isEmpty(str) || !str) return '';
-		return str.toUpperCase();
+		return StringUtil.toString(str).toUpperCase();
 	}
 
 	static toBigInt(str: string | null): bigint | null {
