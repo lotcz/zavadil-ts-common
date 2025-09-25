@@ -8,3 +8,4 @@ export { DateUtil } from './DateUtil';
 export { NumberUtil } from './NumberUtil';
 export { JsonUtil } from './JsonUtil';
 export { HashUtil } from './HashUtil';
+export { UrlUtil } from './UrlUtil';

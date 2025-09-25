@@ -2,7 +2,7 @@ import {OAuthIdTokenProvider} from "./OAuthIdTokenProvider";
 import {IdTokenPayload} from "../OAuthRestClient";
 import {RestClientWithOAuth} from "../RestClientWithOAuth";
 import {StringUtil} from "../../util";
-import UrlUtil from "../../util/UrlUtil";
+import {UrlUtil} from "../../util";
 import {RedirectionProvider} from "./RedirectionProvider";
 
 export class IdTokenProviderUrl extends RedirectionProvider implements OAuthIdTokenProvider {

@@ -1,5 +1,3 @@
-import {StringUtil} from "./StringUtil";
-
 export class ObjectUtil {
 
 	static isEmpty(obj: any): obj is null | undefined {
@@ -21,7 +19,7 @@ export class ObjectUtil {
 	}
 
 	static getNestedValue(obj: any, path: string): string {
-		if (!obj || StringUtil.isBlank(path)) return '';
+		if (!obj || obj === '') return '';
 
 		const keys = path.split('.');
 
@@ -34,7 +32,7 @@ export class ObjectUtil {
 			}
 		}
 
-		return StringUtil.toString(current);
+		return current;
 	}
 
 }

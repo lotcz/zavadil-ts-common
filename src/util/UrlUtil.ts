@@ -1,6 +1,6 @@
 import {StringUtil} from "./StringUtil";
 
-export default class UrlUtil {
+export class UrlUtil {
 
 	static deleteParamFromUrl(url: string, paramName: string): string {
 		const urlObj = new URL(url);
@@ -16,4 +16,9 @@ export default class UrlUtil {
 	static paramExistsInUrl(url: string, name: string): boolean {
 		return StringUtil.notBlank(UrlUtil.extractParamFromUrl(url, name));
 	}
+	static extractHostFromUrl(url: string): string | null {
+		if (StringUtil.isBlank(url)) return null;
+		return new URL(url).host;
+	}
+
 }
