@@ -85,6 +85,11 @@ export class StringUtil {
 		return StringUtil.toString(str).toUpperCase();
 	}
 
+	static capitalizeFirstLetter(str: string | null | undefined): string {
+		if (StringUtil.isBlank(str)) return '';
+		return StringUtil.safeUppercase(str.charAt(0)) + StringUtil.safeLowercase(StringUtil.substr(str, 1));
+	}
+
 	static toBigInt(str: string | null): bigint | null {
 		if (this.isEmpty(str)) return null;
 

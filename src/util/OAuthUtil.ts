@@ -4,7 +4,7 @@ import {StringUtil} from "./StringUtil";
 export class OAuthUtil {
 
 	static isValidToken(token?: TokenResponsePayloadBase | null): boolean {
-		return token !== undefined && token !== null && StringUtil.notEmpty(token.token) && !OAuthUtil.isTokenExpired(token);
+		return token !== undefined && token !== null && StringUtil.notBlank(token.token) && !OAuthUtil.isTokenExpired(token);
 	}
 
 	static isTokenExpired(token?: TokenResponsePayloadBase | null): boolean {

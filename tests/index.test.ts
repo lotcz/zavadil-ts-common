@@ -1,6 +1,4 @@
-import { StringUtil } from '../src/util/StringUtil';
-import {JsonUtil} from "../src/util/JsonUtil";
-import {RestClient} from "../src";
+import { StringUtil, JsonUtil, RestClient } from '../src';
 
 describe('testing StringUtil', () => {
 	test('isEmpty', () => {
@@ -22,6 +20,13 @@ describe('testing StringUtil', () => {
 		expect(StringUtil.getNonEmpty('', 'test')).toBe('test');
 		expect(StringUtil.getNonEmpty('', null, undefined, 'test')).toBe('test');
 		expect(StringUtil.getNonEmpty('', 'test', undefined, 'test2')).toBe('test');
+	});
+	test('capitalizeFirstLetter', () => {
+		expect(StringUtil.capitalizeFirstLetter('test')).toBe('Test');
+		expect(StringUtil.capitalizeFirstLetter('TesT')).toBe('Test');
+		expect(StringUtil.capitalizeFirstLetter('')).toBe('');
+		expect(StringUtil.capitalizeFirstLetter(null)).toBe('');
+
 	});
 });
 
