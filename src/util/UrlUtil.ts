@@ -16,9 +16,15 @@ export class UrlUtil {
 	static paramExistsInUrl(url: string, name: string): boolean {
 		return StringUtil.notBlank(UrlUtil.extractParamFromUrl(url, name));
 	}
+
 	static extractHostFromUrl(url: string): string | null {
 		if (StringUtil.isBlank(url)) return null;
 		return new URL(url).host;
 	}
 
+	static extractDomainFromUrl(url: string): string | null {
+		const host = UrlUtil.extractHostFromUrl(url);
+		if (StringUtil.isBlank(host)) return null;
+		return host.split('.').slice(-2).join('.');
+	}
 }
