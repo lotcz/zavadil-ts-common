@@ -1,4 +1,4 @@
-import { StringUtil, JsonUtil, RestClient } from '../src';
+import {StringUtil, JsonUtil, RestClient, UrlUtil} from '../src';
 
 describe('testing StringUtil', () => {
 	test('isEmpty', () => {
@@ -48,6 +48,14 @@ describe('testing JsonUtil', () => {
 
 		expect(typeof parsed.nval).toBe('number');
 		expect(parsed.nval).toBe(13);
+	});
+});
+
+describe('testing UrlUtil', () => {
+	test('extractDomainFromUrl', () => {
+		expect(UrlUtil.extractDomainFromUrl('http://upload.wikimedia.com/neco?params=param')).toBe('wikimedia.com');
+		expect(UrlUtil.extractDomainFromUrl('http://wikimedia.com/neco?params=param')).toBe('wikimedia.com');
+		expect(UrlUtil.extractDomainFromUrl('http://www.some.long.domain.wikimedia.com/neco?params=param')).toBe('wikimedia.com');
 	});
 });
 
