@@ -1,31 +1,31 @@
-import {AccessTokenPayload, IdTokenPayload, OAuthRestClient} from "./OAuthRestClient";
-import {OAuthIdTokenProvider} from "./tokenprovider/OAuthIdTokenProvider";
+import {AccessTokenPayload, IdTokenPayload, OAuthRestClient, RefreshTokenPayload} from "./OAuthRestClient";
+import {OAuthRefreshTokenProvider} from "./tokenprovider/OAuthRefreshTokenProvider";
 import {OAuthUtil} from "../util/OAuthUtil";
 
 /**
  * Manages refresh of id and access tokens.
  */
-export class OAuthTokenManager implements OAuthIdTokenProvider {
+export class OAuthTokenManager implements OAuthRefreshTokenProvider {
 
 	oAuthServer: OAuthRestClient;
 
 	audience: string;
 
-	idToken?: IdTokenPayload;
+	refreshToken?: RefreshTokenPayload;
 
-	freshIdTokenProvider: OAuthIdTokenProvider;
+	initialRefreshTokenProvider: OAuthRefreshTokenProvider;
 
 	accessTokens: Map<string, AccessTokenPayload>;
 
-	constructor(oAuthServerBaseUrl: string, targetAudience: string, freshIdTokenProvider: OAuthIdTokenProvider) {
-		this.freshIdTokenProvider = freshIdTokenProvider;
+	constructor(oAuthServerBaseUrl: string, targetAudience: string, initialRefreshTokenProvider: OAuthRefreshTokenProvider) {
+		this.initialRefreshTokenProvider = initialRefreshTokenProvider;
 		this.audience = targetAudience;
 		this.oAuthServer = new OAuthRestClient(oAuthServerBaseUrl);
 		this.accessTokens = new Map<string, AccessTokenPayload>();
 	}
 
-	hasValidIdToken(): boolean {
-		return OAuthUtil.isValidToken(this.idToken);
+	hasValidRefreshToken(): boolean {
+		return OAuthUtil.isValidToken(this.refreshToken);
 	}
 
 	hasValidAccessToken(privilege: string): boolean {
@@ -33,72 +33,72 @@ export class OAuthTokenManager implements OAuthIdTokenProvider {
 	}
 
 	reset(): Promise<any> {
-		this.idToken = undefined;
+		this.refreshToken = undefined;
 		this.accessTokens.clear();
-		return this.freshIdTokenProvider.reset();
+		return this.initialRefreshTokenProvider.reset();
 	}
 
 	/**
 	 * Get stored id token or ask the provider, this will trigger redirect to login screen in case of the default provider
 	 */
-	getIdTokenInternal(): Promise<IdTokenPayload> {
-		if (this.idToken === undefined || !this.hasValidIdToken()) {
-			return this.freshIdTokenProvider.getIdToken();
+	getRefreshTokenInternal(): Promise<RefreshTokenPayload> {
+		if (this.hasValidRefreshToken() && this.refreshToken !== undefined) {
+			return Promise.resolve(this.refreshToken);
 		}
-		return Promise.resolve(this.idToken);
+		return this.initialRefreshTokenProvider.getRefreshToken();
 	}
 
 	/**
 	 * Get id token, refresh it if needed
 	 */
-	getIdToken(): Promise<IdTokenPayload> {
-		return this.getIdTokenInternal()
+	getRefreshToken(): Promise<IdTokenPayload> {
+		return this.getRefreshTokenInternal()
 			.then(
-				(t: IdTokenPayload) => {
+				(t: RefreshTokenPayload) => {
 					if (!OAuthUtil.isValidToken(t)) {
 						console.log("invalid token", t);
 						return Promise.reject('Received invalid ID token!');
 					}
 					if (OAuthUtil.isTokenReadyForRefresh(t)) {
 						return this.oAuthServer
-							.refreshIdToken({idToken: t.token})
+							.renewRefreshToken({refreshToken: t.token})
 							.then(
 								(t) => {
-									this.setIdToken(t);
+									this.setRefreshToken(t);
 									return t;
 								}
 							);
 					}
-					this.setIdToken(t);
+					this.setRefreshToken(t);
 					return Promise.resolve(t);
 				}
 			);
 	}
 
-	getIdTokenRaw(): Promise<string> {
-		return this.getIdToken().then(t => t.token);
+	getRefreshTokenRaw(): Promise<string> {
+		return this.getRefreshToken().then(t => t.token);
 	}
 
-	setIdToken(token?: IdTokenPayload) {
-		this.idToken = token;
+	setRefreshToken(token?: IdTokenPayload) {
+		this.refreshToken = token;
 	}
 
-	verifyIdToken(token: string): Promise<IdTokenPayload> {
-		return this.oAuthServer.verifyIdToken(token);
+	verifyRefreshToken(token: string): Promise<RefreshTokenPayload> {
+		return this.oAuthServer.verifyRefreshToken(token);
 	}
 
 	login(login: string, password: string): Promise<any> {
 		this.reset();
 		return this.oAuthServer
-			.requestIdTokenFromLogin({login: login, password: password, targetAudience: this.audience})
-			.then((t) => this.setIdToken(t));
+			.requestRefreshTokenFromLogin({login: login, password: password, targetAudience: this.audience})
+			.then((t) => this.setRefreshToken(t));
 	}
 
 	private getAccessTokenInternal(privilege: string): Promise<AccessTokenPayload> {
-		return this.getIdTokenRaw()
+		return this.getRefreshTokenRaw()
 			.then(
-				(idToken: string) => this.oAuthServer
-					.requestAccessToken({idToken: idToken, targetAudience: this.audience, privilege: privilege})
+				(refreshToken: string) => this.oAuthServer
+					.requestAccessToken({refreshToken: refreshToken, targetAudience: this.audience, privilege: privilege})
 					.then((act: AccessTokenPayload) => {
 						if (!OAuthUtil.isValidToken(act)) {
 							return Promise.reject("Received access token is not valid!");

@@ -1,10 +1,11 @@
 import {TokenResponsePayloadBase} from "../oauth";
 import {StringUtil} from "./StringUtil";
+import {ObjectUtil} from "./ObjectUtil";
 
 export class OAuthUtil {
 
 	static isValidToken(token?: TokenResponsePayloadBase | null): boolean {
-		return token !== undefined && token !== null && StringUtil.notBlank(token.token) && !OAuthUtil.isTokenExpired(token);
+		return ObjectUtil.notEmpty(token) && StringUtil.notBlank(token.token) && !OAuthUtil.isTokenExpired(token);
 	}
 
 	static isTokenExpired(token?: TokenResponsePayloadBase | null): boolean {

@@ -4,7 +4,7 @@ export class ObjectUtil {
 		return obj === undefined || obj === null;
 	}
 
-	static notEmpty(obj: any) {
+	static notEmpty(obj: any): obj is object {
 		return !ObjectUtil.isEmpty(obj);
 	}
 

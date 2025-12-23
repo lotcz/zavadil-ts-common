@@ -1,10 +1,10 @@
-import {OAuthIdTokenProvider} from "./OAuthIdTokenProvider";
+import {OAuthRefreshTokenProvider} from "./OAuthRefreshTokenProvider";
 import {IdTokenPayload} from "../OAuthRestClient";
 import {RedirectionProvider} from "./RedirectionProvider";
 import {RestClientWithOAuth} from "../RestClientWithOAuth";
 import {UrlUtil} from "../../util";
 
-export class IdTokenProviderLogin extends RedirectionProvider implements OAuthIdTokenProvider {
+export class RefreshTokenProviderLogin extends RedirectionProvider implements OAuthRefreshTokenProvider {
 
 	client: RestClientWithOAuth;
 
@@ -29,7 +29,7 @@ export class IdTokenProviderLogin extends RedirectionProvider implements OAuthId
 		});
 	}
 
-	getIdToken(): Promise<IdTokenPayload> {
+	getRefreshToken(): Promise<IdTokenPayload> {
         return this.redirectToLogin();
     }
 

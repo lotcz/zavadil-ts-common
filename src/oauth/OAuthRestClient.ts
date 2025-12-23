@@ -6,15 +6,15 @@ export type TokenRequestPayloadBase = {
 }
 
 export type RequestAccessTokenPayload = TokenRequestPayloadBase & {
-	idToken: string;
+	refreshToken: string;
 	privilege: string;
 }
 
-export type RequestIdTokenFromPrevTokenPayload = {
-	idToken: string;
+export type RenewRefreshTokenPayload = {
+	refreshToken: string;
 }
 
-export type RequestIdTokenFromLoginPayload = TokenRequestPayloadBase & {
+export type RequestRefreshTokenFromLoginPayload = TokenRequestPayloadBase & {
 	login: string;
 	password: string;
 }
@@ -29,6 +29,9 @@ export type IdTokenPayload = TokenResponsePayloadBase & {
 }
 
 export type AccessTokenPayload = TokenResponsePayloadBase & {
+}
+
+export type RefreshTokenPayload = TokenResponsePayloadBase & {
 }
 
 export type JwKeyPayload = {
@@ -56,20 +59,28 @@ export class OAuthRestClient extends RestClient {
 		return this.getJson('jwks.json');
 	}
 
+	verifyRefreshToken(refreshToken: string): Promise<RefreshTokenPayload> {
+		return this.getJson(`refresh-tokens/verify/${refreshToken}`);
+	}
+
+	verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
+		return this.getJson(`access-tokens/verify/${accessToken}`);
+	}
+
 	verifyIdToken(idToken: string): Promise<IdTokenPayload> {
 		return this.getJson(`id-tokens/verify/${idToken}`);
 	}
 
-	requestIdTokenFromLogin(request: RequestIdTokenFromLoginPayload): Promise<IdTokenPayload> {
-		return this.postJson('id-tokens/from-login', request);
+	requestRefreshTokenFromLogin(request: RequestRefreshTokenFromLoginPayload): Promise<RefreshTokenPayload> {
+		return this.postJson('refresh-tokens/from-login', request);
 	}
 
-	refreshIdToken(request: RequestIdTokenFromPrevTokenPayload): Promise<IdTokenPayload> {
-		return this.postJson('id-tokens/refresh', request);
+	renewRefreshToken(request: RenewRefreshTokenPayload): Promise<RefreshTokenPayload> {
+		return this.postJson('refresh-tokens/renew', request);
 	}
 
 	requestAccessToken(request: RequestAccessTokenPayload): Promise<AccessTokenPayload> {
-		return this.postJson('access-tokens/from-id-token', request);
+		return this.postJson('access-tokens/from-refresh-token', request);
 	}
 
 }

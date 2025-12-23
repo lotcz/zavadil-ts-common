@@ -1,17 +1,17 @@
-import {OAuthIdTokenProvider} from "./OAuthIdTokenProvider";
-import {IdTokenPayload} from "../OAuthRestClient";
+import {OAuthRefreshTokenProvider} from "./OAuthRefreshTokenProvider";
+import {RefreshTokenPayload} from "../OAuthRestClient";
 import {JsonUtil} from "../../util";
 import {OAuthUtil} from "../../util/OAuthUtil";
 
-export class IdTokenProviderStorage implements OAuthIdTokenProvider {
+export class RefreshTokenProviderStorage implements OAuthRefreshTokenProvider {
 
 	key: string;
 
 	constructor(storageKey?: string) {
-		this.key = storageKey || 'id-token';
+		this.key = storageKey || 'refresh-token';
 	}
 
-	saveIdTokenToLocalStorage(token: IdTokenPayload | null) {
+	saveRefreshTokenToLocalStorage(token: RefreshTokenPayload | null) {
 		const raw = token ? JSON.stringify(token) : null;
 		if (raw === null) {
 			localStorage.removeItem(this.key);
@@ -20,18 +20,18 @@ export class IdTokenProviderStorage implements OAuthIdTokenProvider {
 		localStorage.setItem(this.key, raw);
 	}
 
-	getIdTokenFromLocalStorage(): IdTokenPayload | null | undefined {
+	getRefreshTokenFromLocalStorage(): RefreshTokenPayload | null | undefined {
 		return JsonUtil.parse(localStorage.getItem(this.key));
 	}
 
-	getIdToken(): Promise<IdTokenPayload> {
-        const token = this.getIdTokenFromLocalStorage();
+	getRefreshToken(): Promise<RefreshTokenPayload> {
+        const token = this.getRefreshTokenFromLocalStorage();
 		if (token && OAuthUtil.isValidToken(token)) return Promise.resolve(token);
 		return Promise.reject("No valid token found in storage!");
     }
 
 	reset(): Promise<any> {
-		this.saveIdTokenToLocalStorage(null);
+		this.saveRefreshTokenToLocalStorage(null);
 		return Promise.resolve();
 	}
 }

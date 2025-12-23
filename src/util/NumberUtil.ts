@@ -1,6 +1,10 @@
 import { ObjectUtil } from "./ObjectUtil";
 
-export class NumberUtil extends ObjectUtil {
+export class NumberUtil {
+
+	static isEmpty(n: any): n is null | undefined {
+		return n === undefined || n === null || Number.isNaN(n);
+	}
 
 	static notEmpty(n?: number | null): n is number {
 		return !ObjectUtil.isEmpty(n);

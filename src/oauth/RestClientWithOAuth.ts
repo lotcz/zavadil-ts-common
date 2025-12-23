@@ -2,8 +2,8 @@ import {OAuthTokenManager} from "./OAuthTokenManager";
 import {RestClient} from "../client";
 import {IdTokenPayload, TokenResponsePayloadBase} from "./OAuthRestClient";
 import {LazyAsync} from "../cache";
-import {OAuthIdTokenProvider} from "./tokenprovider/OAuthIdTokenProvider";
-import {IdTokenProviderDefault} from "./tokenprovider/IdTokenProviderDefault";
+import {OAuthRefreshTokenProvider} from "./tokenprovider/OAuthRefreshTokenProvider";
+import {RefreshTokenProviderDefault} from "./tokenprovider/RefreshTokenProviderDefault";
 
 export type ServerOAuthInfoPayload = {
 	debugMode?: boolean;
@@ -12,11 +12,11 @@ export type ServerOAuthInfoPayload = {
 	version: string;
 }
 
-export class RestClientWithOAuth extends RestClient implements OAuthIdTokenProvider {
+export class RestClientWithOAuth extends RestClient implements OAuthRefreshTokenProvider {
 
 	private insecureClient: RestClient;
 
-	private freshIdTokenProvider: OAuthIdTokenProvider;
+	private freshIdTokenProvider: OAuthRefreshTokenProvider;
 
 	private tokenManager: LazyAsync<OAuthTokenManager>;
 
@@ -24,10 +24,10 @@ export class RestClientWithOAuth extends RestClient implements OAuthIdTokenProvi
 
 	private defaultPrivilege: string;
 
-	constructor(url: string, freshIdTokenProvider?: OAuthIdTokenProvider, defaultPrivilege: string = '*') {
+	constructor(url: string, freshIdTokenProvider?: OAuthRefreshTokenProvider, defaultPrivilege: string = '*') {
 		super(url);
 
-		this.freshIdTokenProvider = freshIdTokenProvider || new IdTokenProviderDefault(this);
+		this.freshIdTokenProvider = freshIdTokenProvider || new RefreshTokenProviderDefault(this);
 		this.defaultPrivilege = defaultPrivilege;
 
 		// rest client without OAuth headers
@@ -37,15 +37,15 @@ export class RestClientWithOAuth extends RestClient implements OAuthIdTokenProvi
 		this.tokenManager = new LazyAsync<OAuthTokenManager>(() => this.getTokenManagerInternal());
 	}
 
-	getIdToken(): Promise<IdTokenPayload> {
-        return this.getTokenManager().then(t => t.getIdToken());
+	getRefreshToken(): Promise<IdTokenPayload> {
+        return this.getTokenManager().then(t => t.getRefreshToken());
     }
 
 	/**
 	 * Attempt to get ID token from token manager
 	 */
 	initialize(): Promise<any> {
-		return this.getIdToken();
+		return this.getRefreshToken();
 	}
 
 	logout(): Promise<any> {
@@ -75,7 +75,7 @@ export class RestClientWithOAuth extends RestClient implements OAuthIdTokenProvi
 	protected getTokenManagerInternal(): Promise<OAuthTokenManager> {
 		return this
 			.getServerInfo()
-			.then((info) =>  new OAuthTokenManager(info.oauthServerUrl, info.targetAudience, this.freshIdTokenProvider));
+			.then((info) => new OAuthTokenManager(info.oauthServerUrl, info.targetAudience, this.freshIdTokenProvider));
 	}
 
 	getTokenManager(): Promise<OAuthTokenManager> {
@@ -88,7 +88,7 @@ export class RestClientWithOAuth extends RestClient implements OAuthIdTokenProvi
 
 	setIdToken(token: IdTokenPayload): Promise<any> {
 		return this.getTokenManager()
-			.then((m) => m.setIdToken(token));
+			.then((m) => m.setRefreshToken(token));
 	}
 
 	getHeaders(endpoint: string): Promise<Headers> {
