@@ -1,6 +1,6 @@
 import { OAuthTokenManager } from "./OAuthTokenManager";
 import { RestClient } from "../client";
-import { IdTokenPayload } from "./OAuthRestClient";
+import { IdTokenPayload, RefreshTokenPayload } from "./OAuthRestClient";
 import { LazyAsync } from "../cache";
 import { OAuthRefreshTokenProvider } from "./tokenprovider/OAuthRefreshTokenProvider";
 import { RefreshTokenProviderDefault } from "./tokenprovider/RefreshTokenProviderDefault";
@@ -98,7 +98,7 @@ export class RestClientWithOAuth
     return this.tokenManager.get();
   }
 
-  login(login: string, password: string): Promise<any> {
+  login(login: string, password: string): Promise<RefreshTokenPayload> {
     return this.getTokenManager().then((m) => m.login(login, password));
   }
 

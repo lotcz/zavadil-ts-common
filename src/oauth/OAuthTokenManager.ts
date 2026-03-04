@@ -82,7 +82,7 @@ export class OAuthTokenManager implements OAuthRefreshTokenProvider {
     return this.getRefreshToken().then((t) => t.token);
   }
 
-  setRefreshToken(token?: IdTokenPayload) {
+  setRefreshToken(token?: RefreshTokenPayload) {
     this.refreshToken = token;
   }
 
@@ -90,7 +90,7 @@ export class OAuthTokenManager implements OAuthRefreshTokenProvider {
     return this.oAuthServer.verifyRefreshToken(token);
   }
 
-  login(login: string, password: string): Promise<any> {
+  login(login: string, password: string): Promise<RefreshTokenPayload> {
     this.reset();
     return this.oAuthServer
       .requestRefreshTokenFromLogin({
@@ -98,7 +98,10 @@ export class OAuthTokenManager implements OAuthRefreshTokenProvider {
         password: password,
         targetAudience: this.audience,
       })
-      .then((t) => this.setRefreshToken(t));
+      .then((t) => {
+        this.setRefreshToken(t);
+        return t;
+      });
   }
 
   private storeAccessToken(scope: string, token: AccessTokenPayload) {
