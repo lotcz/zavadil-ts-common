@@ -1,6 +1,6 @@
-import {IdTokenPayload, RefreshTokenPayload} from "../OAuthRestClient";
+import { RefreshTokenPayload } from "../OAuthRestClient";
 
 export interface OAuthRefreshTokenProvider {
-	getRefreshToken(): Promise<RefreshTokenPayload>;
-	reset(): Promise<any>;
+  getRefreshToken(): Promise<RefreshTokenPayload>;
+  reset(): Promise<any>;
 }
