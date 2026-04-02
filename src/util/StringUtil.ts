@@ -1,140 +1,145 @@
-import { HashUtil } from "./HashUtil";
-import { ObjectUtil } from "./ObjectUtil";
+import {HashUtil} from "./HashUtil";
+import {ObjectUtil} from "./ObjectUtil";
 
 export class StringUtil {
-  static isString(s: any): boolean {
-    return typeof s === "string";
-  }
+	static isString(s: any): boolean {
+		return typeof s === "string";
+	}
 
-  static toString(s: any): string {
-    if (StringUtil.isString(s)) return s;
-    if (StringUtil.isString(s.message)) return s.message; // Errors
-    return s?.toString?.() ?? "";
-  }
+	static toString(s: any): string {
+		if (StringUtil.isString(s)) return s;
+		if (StringUtil.isString(s.message)) return s.message; // Errors
+		return s?.toString?.() ?? "";
+	}
 
-  static isEmpty(str: string | null | undefined): str is null | undefined {
-    if (ObjectUtil.isEmpty(str)) return true;
-    return str.length === 0;
-  }
+	static isEmpty(str: string | null | undefined): str is null | undefined {
+		if (ObjectUtil.isEmpty(str)) return true;
+		return str.length === 0;
+	}
 
-  static notEmpty(str: string | null | undefined): str is string {
-    return !StringUtil.isEmpty(str);
-  }
+	static notEmpty(str: string | null | undefined): str is string {
+		return !StringUtil.isEmpty(str);
+	}
 
-  static isBlank(str: string | null | undefined): str is null | undefined | "" {
-    return StringUtil.isEmpty(StringUtil.safeTrim(str));
-  }
+	static isBlank(str: string | null | undefined): str is null | undefined | "" {
+		return StringUtil.isEmpty(StringUtil.safeTrim(str));
+	}
 
-  static notBlank(str: string | null | undefined): str is string {
-    return !StringUtil.isBlank(str);
-  }
+	static notBlank(str: string | null | undefined): str is string {
+		return !StringUtil.isBlank(str);
+	}
 
-  static substr(
-    str: string | null | undefined,
-    start: number,
-    length?: number,
-  ): string {
-    if (this.isEmpty(str)) return "";
+	static substr(
+		str: string | null | undefined,
+		start: number,
+		length?: number,
+	): string {
+		if (this.isEmpty(str)) return "";
 
-    // @ts-ignore
-    return str.substring(start, length);
-  }
+		// @ts-ignore
+		return str.substring(start, length);
+	}
 
-  static replace(
-    str: string | null | undefined,
-    find?: null | string,
-    replace?: string,
-  ): string {
-    if (this.isEmpty(str) || this.isEmpty(find)) return "";
-    return str.replace(find, String(replace));
-  }
+	static replace(
+		str: string | null | undefined,
+		find?: null | string,
+		replace?: string,
+	): string {
+		if (this.isEmpty(str) || this.isEmpty(find)) return "";
+		return str.replace(find, String(replace));
+	}
 
-  static containsLineBreaks(str: string | null | undefined): str is string {
-    if (StringUtil.isBlank(str)) return false;
-    return str.includes("\n");
-  }
+	static containsLineBreaks(str: string | null | undefined): str is string {
+		return StringUtil.safeContains(str, "\n");
+	}
 
-  static trimLeadingSlashes(str: string | null): string {
-    if (this.isEmpty(str)) return "";
-    return StringUtil.toString(str).replace(/^\//g, "");
-  }
+	static safeContains(haystack: string | null | undefined, needle: string | null | undefined, caseSensitive: boolean = true): haystack is string {
+		if (StringUtil.isBlank(haystack) || StringUtil.isBlank(needle)) return false;
+		if (caseSensitive) return StringUtil.safeContains(haystack.toLowerCase(), needle.toLowerCase(), false);
+		return haystack.includes(needle);
+	}
 
-  static trimTrailingSlashes(str: string | null): string {
-    if (this.isEmpty(str)) return "";
-    return StringUtil.toString(str).replace(/\/$/g, "");
-  }
+	static trimLeadingSlashes(str: string | null): string {
+		if (this.isEmpty(str)) return "";
+		return StringUtil.toString(str).replace(/^\//g, "");
+	}
 
-  static trimSlashes(str: string | null): string {
-    if (this.isEmpty(str)) return "";
-    return StringUtil.toString(str).replace(/^\/|\/$/g, "");
-  }
+	static trimTrailingSlashes(str: string | null): string {
+		if (this.isEmpty(str)) return "";
+		return StringUtil.toString(str).replace(/\/$/g, "");
+	}
 
-  static safeTruncate(
-    str: string | null | undefined,
-    len: number,
-    ellipsis: string = "",
-  ): string {
-    if (StringUtil.isEmpty(str) || !str) return "";
-    str = StringUtil.toString(str);
-    if (str.length <= len) return String(str);
-    return str.substring(0, len - ellipsis.length) + ellipsis;
-  }
+	static trimSlashes(str: string | null): string {
+		if (this.isEmpty(str)) return "";
+		return StringUtil.toString(str).replace(/^\/|\/$/g, "");
+	}
 
-  static ellipsis(
-    str: string | null | undefined,
-    len: number,
-    ellipsis: string = "...",
-  ): string {
-    return StringUtil.safeTruncate(str, len, ellipsis);
-  }
+	static safeTruncate(
+		str: string | null | undefined,
+		len: number,
+		ellipsis: string = "",
+	): string {
+		if (StringUtil.isEmpty(str) || !str) return "";
+		str = StringUtil.toString(str);
+		if (str.length <= len) return String(str);
+		return str.substring(0, len - ellipsis.length) + ellipsis;
+	}
 
-  static safeTrim(str: string | null | undefined): string {
-    if (StringUtil.isEmpty(str)) return "";
-    return StringUtil.toString(str).trim();
-  }
+	static ellipsis(
+		str: string | null | undefined,
+		len: number,
+		ellipsis: string = "...",
+	): string {
+		return StringUtil.safeTruncate(str, len, ellipsis);
+	}
 
-  static safeLowercase(str: string | null | undefined): string {
-    if (StringUtil.isEmpty(str) || !str) return "";
-    return StringUtil.toString(str).toLowerCase();
-  }
+	static safeTrim(str: string | null | undefined): string {
+		if (StringUtil.isEmpty(str)) return "";
+		return StringUtil.toString(str).trim();
+	}
 
-  static safeUppercase(str: string | null | undefined): string {
-    if (StringUtil.isEmpty(str) || !str) return "";
-    return StringUtil.toString(str).toUpperCase();
-  }
+	static safeLowercase(str: string | null | undefined): string {
+		if (StringUtil.isEmpty(str) || !str) return "";
+		return StringUtil.toString(str).toLowerCase();
+	}
 
-  static capitalizeFirstLetter(str: string | null | undefined): string {
-    if (StringUtil.isBlank(str)) return "";
-    return (
-      StringUtil.safeUppercase(str.charAt(0)) +
-      StringUtil.safeLowercase(StringUtil.substr(str, 1))
-    );
-  }
+	static safeUppercase(str: string | null | undefined): string {
+		if (StringUtil.isEmpty(str) || !str) return "";
+		return StringUtil.toString(str).toUpperCase();
+	}
 
-  static toBigInt(str: string | null): bigint | null {
-    if (this.isEmpty(str)) return null;
+	static capitalizeFirstLetter(str: string | null | undefined): string {
+		if (StringUtil.isBlank(str)) return "";
+		return (
+			StringUtil.safeUppercase(str.charAt(0)) +
+			StringUtil.safeLowercase(StringUtil.substr(str, 1))
+		);
+	}
 
-    // @ts-ignore
-    return BigInt(str);
-  }
+	static toBigInt(str: string | null): bigint | null {
+		if (this.isEmpty(str)) return null;
 
-  static getNonEmpty(...args: Array<string | null | undefined>): string {
-    return args.find((a) => StringUtil.notEmpty(a)) || "";
-  }
+		// @ts-ignore
+		return BigInt(str);
+	}
 
-  static getNonBlank(...args: Array<string | null | undefined>): string {
-    return args.find((a) => StringUtil.notBlank(a)) || "";
-  }
+	static getNonEmpty(...args: Array<string | null | undefined>): string {
+		return args.find((a) => StringUtil.notEmpty(a)) || "";
+	}
 
-  static emptyToNull(str: string | null | undefined): string | null {
-    return StringUtil.isEmpty(str) ? null : String(str);
-  }
+	static getNonBlank(...args: Array<string | null | undefined>): string {
+		return args.find((a) => StringUtil.notBlank(a)) || "";
+	}
 
-  static blankToNull(str: string | null | undefined): string | null {
-    return StringUtil.isBlank(str) ? null : String(str);
-  }
+	static emptyToNull(str: string | null | undefined): string | null {
+		return StringUtil.isEmpty(str) ? null : String(str);
+	}
 
-  static randomString(): string {
-    return HashUtil.crc32hex(Date() + Math.random());
-  }
+	static blankToNull(str: string | null | undefined): string | null {
+		return StringUtil.isBlank(str) ? null : String(str);
+	}
+
+	static randomString(): string {
+		return HashUtil.crc32hex(Date() + Math.random());
+	}
 }

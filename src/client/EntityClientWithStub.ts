@@ -1,5 +1,5 @@
 import {EntityClient} from "./EntityClient";
-import {EntityBase} from "../type/Entity";
+import {EntityBase} from "../type";
 
 export class EntityClientWithStub<T extends EntityBase, TStub extends EntityBase> extends EntityClient<T> {
 
