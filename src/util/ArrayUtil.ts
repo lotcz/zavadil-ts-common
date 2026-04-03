@@ -7,7 +7,7 @@ export class ArrayUtil {
 		return ObjectUtil.isEmpty(arr) || arr.length === 0;
 	}
 
-	static notEmpty(arr?: Array<any> | null): boolean {
+	static notEmpty(arr?: Array<any> | null): arr is Array<any> {
 		return !ArrayUtil.isEmpty(arr);
 	}
 
@@ -15,6 +15,16 @@ export class ArrayUtil {
 		if (ArrayUtil.isEmpty(arr)) return [];
 		// @ts-ignore
 		return arr?.filter(e => e !== element);
+	}
+
+	static extract(arr?: Array<any> | null, start: number = 0, length?: number): Array<any> {
+		if ((!arr) || arr.length <= start) return [];
+		const end = length === undefined ? undefined : start + length;
+		return arr.slice(start, end);
+	}
+
+	static extractStart(arr: Array<any> | null | undefined, length: number): Array<any> {
+		return ArrayUtil.extract(arr, 0, length);
 	}
 
 }
