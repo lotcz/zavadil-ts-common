@@ -1,4 +1,4 @@
-import {StringUtil, JsonUtil, RestClient, UrlUtil} from '../src';
+import {StringUtil, JsonUtil, RestClient, UrlUtil, EmailUtil} from '../src';
 
 describe('testing StringUtil', () => {
 	test('isEmpty', () => {
@@ -75,5 +75,20 @@ describe('testing RestClient', () => {
 		expect(clientNoLead.getBaseUrl().href).toBe('http://localhost/rel/');
 		expect(clientNoLead.getUrl('/test').href).toBe('http://localhost/rel/test');
 		expect(clientNoLead.getUrl('test').href).toBe('http://localhost/rel/test');
+	});
+});
+
+
+describe('testing EmailUtil', () => {
+	test('isValidEmail', () => {
+		expect(EmailUtil.isValidEmail(undefined)).toBe(false);
+		expect(EmailUtil.isValidEmail(null)).toBe(false);
+		expect(EmailUtil.isValidEmail('')).toBe(false);
+		expect(EmailUtil.isValidEmail('very#broken.e/mail')).toBe(false);
+		expect(EmailUtil.isValidEmail('almost-okay@brokenemai.l')).toBe(false);
+
+		expect(EmailUtil.isValidEmail('karel@zavadil.eu')).toBe(true);
+		expect(EmailUtil.isValidEmail('karelzav@gmail.com')).toBe(true);
+		expect(EmailUtil.isValidEmail('some.rather-complicated@email-to.be.checked')).toBe(true);
 	});
 });

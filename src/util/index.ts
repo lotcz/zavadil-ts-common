@@ -9,3 +9,4 @@ export { NumberUtil } from './NumberUtil';
 export { JsonUtil } from './JsonUtil';
 export { HashUtil } from './HashUtil';
 export { UrlUtil } from './UrlUtil';
+export { EmailUtil } from './EmailUtil';
