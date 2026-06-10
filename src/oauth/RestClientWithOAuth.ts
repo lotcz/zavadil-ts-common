@@ -1,9 +1,9 @@
 import { OAuthTokenManager } from "./OAuthTokenManager";
 import { RestClient } from "../client";
-import { IdTokenPayload, RefreshTokenPayload } from "./OAuthRestClient";
 import { LazyAsync } from "../cache";
 import { OAuthRefreshTokenProvider } from "./tokenprovider/OAuthRefreshTokenProvider";
 import { RefreshTokenProviderDefault } from "./tokenprovider/RefreshTokenProviderDefault";
+import {IdTokenPayload, RefreshTokenPayload} from "./Types";
 
 export type ServerOAuthInfoPayload = {
   debugMode?: boolean;

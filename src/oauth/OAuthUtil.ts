@@ -1,10 +1,5 @@
-import {
-  PermissionLevel,
-  PERMISSION_LEVELS,
-  TokenResponsePayloadBase,
-} from "../oauth";
-import { StringUtil } from "./StringUtil";
-import { ObjectUtil } from "./ObjectUtil";
+import { StringUtil, ObjectUtil } from "../util";
+import {PERMISSION_LEVELS, PermissionLevel, TokenResponsePayloadBase} from "./Types";
 
 export class OAuthUtil {
   static isValidToken(token?: TokenResponsePayloadBase | null): boolean {

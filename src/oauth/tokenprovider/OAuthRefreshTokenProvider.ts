@@ -1,4 +1,4 @@
-import { RefreshTokenPayload } from "../OAuthRestClient";
+import { RefreshTokenPayload } from "../Types";
 
 export interface OAuthRefreshTokenProvider {
   getRefreshToken(): Promise<RefreshTokenPayload>;

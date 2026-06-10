@@ -1,8 +1,7 @@
 import {OAuthRefreshTokenProvider} from "./OAuthRefreshTokenProvider";
-import {RefreshTokenPayload} from "../OAuthRestClient";
+import {RefreshTokenPayload} from "../Types";
 import {RestClientWithOAuth} from "../RestClientWithOAuth";
-import {StringUtil} from "../../util";
-import {UrlUtil} from "../../util";
+import {StringUtil, UrlUtil} from "../../util";
 import {RedirectionProvider} from "./RedirectionProvider";
 
 export class RefreshTokenProviderUrl extends RedirectionProvider implements OAuthRefreshTokenProvider {

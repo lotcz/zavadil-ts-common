@@ -1,7 +1,7 @@
 import {OAuthRefreshTokenProvider} from "./OAuthRefreshTokenProvider";
-import {RefreshTokenPayload} from "../OAuthRestClient";
+import {RefreshTokenPayload} from "../Types";
 import {JsonUtil} from "../../util";
-import {OAuthUtil} from "../../util/OAuthUtil";
+import {OAuthUtil} from "../OAuthUtil";
 
 export class RefreshTokenProviderStorage implements OAuthRefreshTokenProvider {
 

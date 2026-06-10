@@ -70,7 +70,7 @@ export class RestClient {
   getRequestOptions(
     endpoint: string,
     method: string = "GET",
-    data: object | null = null,
+    data: any = null,
   ): Promise<RequestOptions> {
     return this.getHeaders(endpoint).then((headers) => {
       return {
@@ -79,7 +79,7 @@ export class RestClient {
         body:
           data === null
             ? null
-            : data instanceof FormData
+            : (data instanceof FormData || typeof data === 'string')
               ? data
               : JSON.stringify(data),
       };
@@ -199,7 +199,7 @@ export class RestClient {
 
   post(
     url: string,
-    data: object | null = null,
+    data: any = null,
     params?: any,
   ): Promise<Response> {
     return this.getRequestOptions(url, "POST", data).then((o) =>
@@ -209,7 +209,7 @@ export class RestClient {
 
   put(
     url: string,
-    data: object | null = null,
+    data: any = null,
     params?: any,
   ): Promise<Response> {
     return this.getRequestOptions(url, "PUT", data).then((o) =>

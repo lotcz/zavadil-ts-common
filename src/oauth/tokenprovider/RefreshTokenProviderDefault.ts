@@ -1,5 +1,5 @@
 import {OAuthRefreshTokenProvider} from "./OAuthRefreshTokenProvider";
-import {IdTokenPayload} from "../OAuthRestClient";
+import {IdTokenPayload} from "../Types";
 import {RefreshTokenProviderLogin} from "./RefreshTokenProviderLogin";
 import {RestClientWithOAuth} from "../RestClientWithOAuth";
 import {RefreshTokenProviderUrl} from "./RefreshTokenProviderUrl";

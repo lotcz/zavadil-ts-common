@@ -1,52 +1,13 @@
 import { RestClient } from "../client";
 import { StringUtil } from "../util";
-
-export const PERMISSION_LEVELS = ["read", "write", "admin"] as const;
-
-export type PermissionLevel = (typeof PERMISSION_LEVELS)[number];
-
-export type TokenRequestPayloadBase = {
-  targetAudience: string;
-};
-
-export type RequestAccessTokenPayload = TokenRequestPayloadBase & {
-  refreshToken: string;
-  scope: string;
-};
-
-export type RenewRefreshTokenPayload = {
-  refreshToken: string;
-};
-
-export type RequestRefreshTokenFromLoginPayload = TokenRequestPayloadBase & {
-  login: string;
-  password: string;
-};
-
-export type TokenResponsePayloadBase = {
-  token: string;
-  issuedAt: Date;
-  expires?: Date | null;
-};
-
-export type IdTokenPayload = TokenResponsePayloadBase & {};
-
-export type AccessTokenPayload = TokenResponsePayloadBase & {
-  scopes?: Array<string>;
-};
-
-export type RefreshTokenPayload = TokenResponsePayloadBase & {};
-
-export type JwKeyPayload = {
-  kty: string;
-  kid: string;
-  n: string;
-  e: string;
-};
-
-export type JwksPayload = {
-  keys: Array<JwKeyPayload>;
-};
+import {
+	AccessTokenPayload,
+	IdTokenPayload,
+	JwksPayload,
+	RefreshTokenPayload,
+	RenewRefreshTokenPayload, RequestAccessTokenPayload,
+	RequestRefreshTokenFromLoginPayload
+} from "./Types";
 
 /**
  * This implements rest client for OAuth server - https://github.com/lotcz/oauth-server

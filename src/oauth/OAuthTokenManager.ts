@@ -1,11 +1,11 @@
 import {
 	AccessTokenPayload,
 	IdTokenPayload,
-	OAuthRestClient,
 	RefreshTokenPayload,
-} from "./OAuthRestClient";
+} from "./Types";
 import {OAuthRefreshTokenProvider} from "./tokenprovider/OAuthRefreshTokenProvider";
-import {OAuthUtil} from "../util/OAuthUtil";
+import {OAuthUtil} from "./OAuthUtil";
+import {OAuthRestClient} from "./OAuthRestClient";
 
 /**
  * Manages refresh of id and access tokens.

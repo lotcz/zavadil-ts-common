@@ -1,5 +1,3 @@
-import { ObjectUtil } from "./ObjectUtil";
-
 export class NumberUtil {
 
 	static isEmpty(n: any): n is null | undefined {
@@ -7,7 +5,7 @@ export class NumberUtil {
 	}
 
 	static notEmpty(n?: number | null): n is number {
-		return !ObjectUtil.isEmpty(n);
+		return !NumberUtil.isEmpty(n);
 	}
 
 	static parseNumber(str: string | null | undefined): number | null {
