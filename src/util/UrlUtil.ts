@@ -27,4 +27,16 @@ export class UrlUtil {
 		if (StringUtil.isBlank(host)) return null;
 		return host.split('.').slice(-2).join('.');
 	}
+
+	static slugify(text: string): string {
+		if (StringUtil.isBlank(text)) return '';
+		return text
+			.normalize('NFKD')                  // split accented characters into base + diacritic
+			.replace(/[\u0300-\u036f]/g, '')    // remove diacritics
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9\s-]/g, '')       // remove non-alphanumeric chars
+			.replace(/[\s_-]+/g, '-')           // collapse whitespace/underscores/dashes into one dash
+			.replace(/^-+|-+$/g, '');           // trim leading/trailing dashes
+	}
 }
