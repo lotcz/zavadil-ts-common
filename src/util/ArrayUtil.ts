@@ -2,8 +2,7 @@ import { ObjectUtil } from "./ObjectUtil";
 
 export class ArrayUtil {
 
-	static isEmpty(arr?: Array<any> | null): boolean {
-		// @ts-ignore
+	static isEmpty(arr?: Array<any> | null): arr is null | undefined {
 		return ObjectUtil.isEmpty(arr) || arr.length === 0;
 	}
 
@@ -13,8 +12,7 @@ export class ArrayUtil {
 
 	static remove(arr?: Array<any> | null, element?: any): Array<any> {
 		if (ArrayUtil.isEmpty(arr)) return [];
-		// @ts-ignore
-		return arr?.filter(e => e !== element);
+		return arr.filter(e => e !== element);
 	}
 
 	static extract(arr?: Array<any> | null, start: number = 0, length?: number): Array<any> {

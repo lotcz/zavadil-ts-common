@@ -2,8 +2,8 @@ import {HashUtil} from "./HashUtil";
 import {ObjectUtil} from "./ObjectUtil";
 
 export class StringUtil {
-	static isString(s: any): boolean {
-		return typeof s === "string";
+	static isString(str: any): str is string {
+		return typeof str === "string";
 	}
 
 	static toString(s: any): string {

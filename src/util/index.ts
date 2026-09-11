@@ -5,6 +5,7 @@ export { AsyncUtil } from './AsyncUtil';
 export { ByteUtil } from './ByteUtil';
 export { PagingUtil } from './PagingUtil';
 export { DateUtil } from './DateUtil';
+export { DateUtilCs } from './DateUtilCs';
 export { NumberUtil } from './NumberUtil';
 export { JsonUtil } from './JsonUtil';
 export { HashUtil } from './HashUtil';
